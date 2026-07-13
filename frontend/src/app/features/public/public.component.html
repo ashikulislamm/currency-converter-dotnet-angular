@@ -1,0 +1,130 @@
+<div class="relative min-h-screen flex flex-col justify-between bg-slate-950 text-slate-100 font-sans overflow-hidden">
+  <!-- Glowing Background Orbs -->
+  <div class="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] rounded-full bg-violet-600/20 blur-[120px] pointer-events-none"></div>
+  <div class="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] rounded-full bg-cyan-600/20 blur-[120px] pointer-events-none"></div>
+
+  <!-- Header -->
+  <header class="relative z-10 w-full max-w-7xl mx-auto px-6 py-6 flex justify-between items-center border-b border-slate-800/50 backdrop-blur-md">
+    <div class="flex items-center gap-3">
+      <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-violet-600 to-cyan-400 flex items-center justify-center shadow-lg shadow-violet-500/20">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+      </div>
+      <span class="text-xl font-bold tracking-tight bg-gradient-to-r from-slate-50 to-slate-300 bg-clip-text text-transparent">Antigravity FX</span>
+    </div>
+    
+    <div>
+      @if (authService.isAuthenticated()) {
+        <a routerLink="/secure" class="px-5 py-2.5 rounded-xl font-medium bg-gradient-to-r from-violet-600 to-cyan-500 text-white shadow-lg shadow-violet-500/25 hover:shadow-violet-500/40 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300">
+          Go to Secured Dashboard
+        </a>
+      } @else {
+        <a routerLink="/login" class="px-5 py-2.5 rounded-xl font-medium bg-slate-800/80 hover:bg-slate-700/80 text-white border border-slate-700 hover:border-slate-600 transition-all duration-300">
+          Log In
+        </a>
+      }
+    </div>
+  </header>
+
+  <!-- Hero Content -->
+  <main class="relative z-10 w-full max-w-7xl mx-auto px-6 py-16 md:py-24 flex-grow flex flex-col md:flex-row items-center justify-between gap-12">
+    <div class="flex-1 text-left space-y-6 max-w-xl">
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-violet-500/10 border border-violet-500/20 text-violet-400 text-sm font-medium">
+        <span class="flex h-2 w-2 relative">
+          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-violet-400 opacity-75"></span>
+          <span class="relative inline-flex rounded-full h-2 w-2 bg-violet-500"></span>
+        </span>
+        Open Access Rates Portal
+      </div>
+      
+      <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-tight text-white">
+        Global Exchange, <br />
+        <span class="bg-gradient-to-r from-violet-400 via-indigo-300 to-cyan-300 bg-clip-text text-transparent">
+          Simplified.
+        </span>
+      </h1>
+      
+      <p class="text-lg text-slate-400 leading-relaxed">
+        Antigravity FX is a production-grade, secure exchange rate service. Access live updates, manage portfolios, and calculate rates in real time.
+      </p>
+
+      <div class="flex flex-wrap gap-4 pt-4">
+        @if (authService.isAuthenticated()) {
+          <a routerLink="/secure" class="px-6 py-3.5 rounded-xl font-semibold bg-gradient-to-r from-violet-600 to-cyan-500 text-white shadow-xl shadow-violet-500/20 hover:shadow-violet-500/35 hover:scale-[1.03] active:scale-[0.97] transition-all duration-300 flex items-center gap-2">
+            Secure Portal
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+            </svg>
+          </a>
+        } @else {
+          <a routerLink="/login" class="px-6 py-3.5 rounded-xl font-semibold bg-gradient-to-r from-violet-600 to-cyan-500 text-white shadow-xl shadow-violet-500/20 hover:shadow-violet-500/35 hover:scale-[1.03] active:scale-[0.97] transition-all duration-300 flex items-center gap-2">
+            Authenticate to Access Portal
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
+            </svg>
+          </a>
+        }
+      </div>
+    </div>
+
+    <!-- Right Graphic Panel (Glassmorphism Cards) -->
+    <div class="flex-1 w-full max-w-md relative">
+      <div class="absolute inset-0 bg-gradient-to-tr from-violet-500/10 to-cyan-500/10 rounded-3xl blur-2xl"></div>
+      
+      <!-- Mock exchange display card -->
+      <div class="relative bg-slate-900/60 border border-slate-800 rounded-3xl p-6 backdrop-blur-xl shadow-2xl space-y-6">
+        <div class="flex justify-between items-center">
+          <span class="text-sm font-semibold tracking-wide text-slate-500 uppercase">Live Exchange Pair</span>
+          <span class="px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 text-xs font-semibold">+1.42%</span>
+        </div>
+        
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center text-lg font-bold">🇺🇸</div>
+            <div>
+              <div class="font-bold text-white">USD</div>
+              <div class="text-xs text-slate-500">United States Dollar</div>
+            </div>
+          </div>
+          <span class="text-lg font-semibold text-slate-400">1.0000</span>
+        </div>
+
+        <div class="flex justify-center my-[-10px]">
+          <div class="w-8 h-8 rounded-full bg-violet-600/35 border border-violet-500/40 flex items-center justify-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-violet-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" />
+            </svg>
+          </div>
+        </div>
+
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center text-lg font-bold">🇪🇺</div>
+            <div>
+              <div class="font-bold text-white">EUR</div>
+              <div class="text-xs text-slate-500">Euro Zone</div>
+            </div>
+          </div>
+          <span class="text-lg font-semibold text-white">0.9150</span>
+        </div>
+
+        <hr class="border-slate-800" />
+
+        <div class="flex justify-between items-center text-sm">
+          <span class="text-slate-500">Last Updated</span>
+          <span class="text-slate-300 font-medium">Just now</span>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="relative z-10 w-full max-w-7xl mx-auto px-6 py-6 flex flex-col sm:flex-row justify-between items-center border-t border-slate-800/40 text-sm text-slate-500 gap-4">
+    <p>&copy; 2026 Antigravity FX. All rights reserved.</p>
+    <div class="flex gap-6">
+      <a class="hover:text-slate-300 transition-colors">Privacy Policy</a>
+      <a class="hover:text-slate-300 transition-colors">Terms of Service</a>
+    </div>
+  </footer>
+</div>
