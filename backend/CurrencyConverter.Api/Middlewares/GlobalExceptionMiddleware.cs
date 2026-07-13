@@ -50,6 +50,16 @@ public class GlobalExceptionMiddleware
             statusCode = HttpStatusCode.Unauthorized;
             message = authEx.Message;
         }
+        else if (exception is ValidationException valEx)
+        {
+            statusCode = HttpStatusCode.BadRequest;
+            message = valEx.Message;
+        }
+        else if (exception is HttpRequestException)
+        {
+            statusCode = HttpStatusCode.BadGateway;
+            message = "External currency rates service returned an error or was unreachable.";
+        }
 
         context.Response.StatusCode = (int)statusCode;
 

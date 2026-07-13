@@ -9,6 +9,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 
+using CurrencyConverter.Infrastructure.External;
+using System;
+
 namespace CurrencyConverter.Infrastructure;
 
 /// <summary>
@@ -26,13 +29,27 @@ public static class DependencyInjection
             configuration.GetSection(JwtSettings.SectionName));
         services.Configure<UserCredentialsSettings>(
             configuration.GetSection(UserCredentialsSettings.SectionName));
+        services.Configure<CurrencyApiSettings>(
+            configuration.GetSection(CurrencyApiSettings.SectionName));
 
         // Register application services
         services.AddScoped<IAuthService, AuthService>();
+        services.AddScoped<ICurrencyService, CurrencyService>();
 
         // Register infrastructure services
         services.AddScoped<IUserCredentialsProvider, UserCredentialsProvider>();
         services.AddScoped<IJwtService, JwtService>();
+
+        // Configure Typed HttpClient for Currency API
+        var currencyApiSection = configuration.GetSection(CurrencyApiSettings.SectionName);
+        var baseUrl = currencyApiSection.GetValue<string>(nameof(CurrencyApiSettings.BaseUrl)) ?? "https://api.frankfurter.app/";
+        var timeoutSeconds = currencyApiSection.GetValue<int?>(nameof(CurrencyApiSettings.TimeoutSeconds)) ?? 15;
+
+        services.AddHttpClient<ICurrencyApiClient, CurrencyApiClient>(client =>
+        {
+            client.BaseAddress = new Uri(baseUrl);
+            client.Timeout = TimeSpan.FromSeconds(timeoutSeconds);
+        });
 
         // Fetch JWT secret to configure authentication middleware
         var jwtSection = configuration.GetSection(JwtSettings.SectionName);
