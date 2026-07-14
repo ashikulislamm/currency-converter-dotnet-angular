@@ -1,127 +1,161 @@
-<div class="relative min-h-screen flex items-center justify-center bg-slate-950 text-slate-100 font-sans overflow-hidden px-4">
-  <!-- Glowing Background Orbs -->
-  <div class="absolute top-[-20%] left-[-20%] w-[60%] h-[60%] rounded-full bg-violet-600/15 blur-[130px] pointer-events-none"></div>
-  <div class="absolute bottom-[-20%] right-[-20%] w-[60%] h-[60%] rounded-full bg-cyan-600/15 blur-[130px] pointer-events-none"></div>
-
-  <div class="relative w-full max-w-md z-10 space-y-8">
-    <!-- Branding Header -->
-    <div class="text-center space-y-3">
-      <a routerLink="/" class="inline-flex items-center gap-3 group">
-        <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-violet-600 to-cyan-400 flex items-center justify-center shadow-lg shadow-violet-500/25 group-hover:scale-[1.05] transition-transform duration-300">
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-          </svg>
-        </div>
-      </a>
-      <h2 class="text-3xl font-extrabold tracking-tight text-white">Access Portal</h2>
-      <p class="text-sm text-slate-400">Please enter your configured credentials below.</p>
-    </div>
-
-    <!-- Login Glassmorphic Card -->
-    <div class="bg-slate-900/55 border border-slate-800 rounded-3xl p-8 backdrop-blur-xl shadow-2xl space-y-6">
-      <!-- Error Message Alert -->
-      @if (errorMessage) {
-        <div class="flex items-start gap-3 p-4 rounded-2xl bg-rose-500/10 border border-rose-500/20 text-rose-400 text-sm animate-fade-in">
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-          </svg>
-          <div>
-            <span class="font-semibold">Authentication Failed</span>
-            <p class="mt-0.5 opacity-90">{{ errorMessage }}</p>
-          </div>
-        </div>
-      }
-
-      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="space-y-5">
-        <!-- Username input group -->
-        <div class="space-y-1.5">
-          <label for="username" class="text-sm font-semibold text-slate-300">Username</label>
-          <div class="relative">
-            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-500">
-              <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-              </svg>
-            </div>
-            <input 
-              id="username"
-              type="text"
-              formControlName="username"
-              placeholder="e.g. admin"
-              class="w-full pl-11 pr-4 py-3 rounded-xl bg-slate-950/50 border text-slate-100 placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500 transition-all duration-200"
-              [class.border-rose-500]="isFieldInvalid('username')"
-              [class.border-slate-800]="!isFieldInvalid('username')"
-            />
-          </div>
-          @if (isFieldInvalid('username')) {
-            <div class="text-xs text-rose-400 font-medium pl-1 animate-pulse">
-              @if (loginForm.get('username')?.errors?.['required']) {
-                Username is required.
-              }
-              @if (loginForm.get('username')?.errors?.['minlength']) {
-                Username must be at least 3 characters.
-              }
-            </div>
-          }
-        </div>
-
-        <!-- Password input group -->
-        <div class="space-y-1.5">
-          <label for="password" class="text-sm font-semibold text-slate-300">Password</label>
-          <div class="relative">
-            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-500">
-              <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-              </svg>
-            </div>
-            <input 
-              id="password"
-              type="password"
-              formControlName="password"
-              placeholder="••••••••"
-              class="w-full pl-11 pr-4 py-3 rounded-xl bg-slate-950/50 border text-slate-100 placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500 transition-all duration-200"
-              [class.border-rose-500]="isFieldInvalid('password')"
-              [class.border-slate-800]="!isFieldInvalid('password')"
-            />
-          </div>
-          @if (isFieldInvalid('password')) {
-            <div class="text-xs text-rose-400 font-medium pl-1 animate-pulse">
-              @if (loginForm.get('password')?.errors?.['required']) {
-                Password is required.
-              }
-              @if (loginForm.get('password')?.errors?.['minlength']) {
-                Password must be at least 6 characters.
-              }
-            </div>
-          }
-        </div>
-
-        <!-- Submit Button -->
-        <button 
-          type="submit"
-          [disabled]="isLoading"
-          class="w-full py-3.5 rounded-xl font-bold bg-gradient-to-r from-violet-600 to-cyan-500 text-white shadow-xl shadow-violet-500/15 hover:shadow-violet-500/30 hover:scale-[1.01] active:scale-[0.99] disabled:opacity-50 disabled:scale-100 disabled:shadow-none transition-all duration-300 flex items-center justify-center gap-2"
-        >
-          @if (isLoading) {
-            <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-            </svg>
-            Validating Credentials...
-          } @else {
-            Log In
-          }
-        </button>
-      </form>
-    </div>
-
-    <!-- Back to Public page -->
-    <div class="text-center">
-      <a routerLink="/" class="text-sm font-medium text-slate-500 hover:text-slate-300 transition-colors flex items-center justify-center gap-1.5 group">
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 group-hover:-translate-x-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-        </svg>
-        Back to Home
+<div class="login-page-container">
+  <!-- Centered Redesigned Authentication Card Column -->
+  <div class="form-column">
+    <!-- Return to Homepage Button -->
+    <div class="centered-header">
+      <a routerLink="/" class="back-home-button">
+        <svg lucideIcon="arrow-right" class="back-arrow" style="transform: rotate(180deg); width: 14px; height: 14px;"></svg>
+        <span>Back to Homepage</span>
       </a>
     </div>
+
+    <!-- Centered Card Container -->
+    <div class="auth-card-wrapper">
+      <div class="premium-auth-card">
+        <!-- Top Section -->
+        <div class="card-top">
+          <div class="lock-icon-container">
+            <svg lucideIcon="lock" class="lock-icon"></svg>
+          </div>
+          <h2 class="card-heading">Welcome Back!</h2>
+          <p class="card-subheading">Sign in to access your account.</p>
+        </div>
+
+        <!-- Error Banner inside card -->
+        @if (errorMessage) {
+          <div class="premium-error-banner" role="alert">
+            <div class="error-banner-content">
+              <svg lucideIcon="alert-circle" class="error-banner-icon"></svg>
+              <div class="error-banner-text">
+                <span class="error-banner-title">Authentication Failed</span>
+                <p class="error-banner-desc">{{ errorMessage }}</p>
+              </div>
+            </div>
+            <button type="button" class="error-banner-close" (click)="errorMessage = null" aria-label="Dismiss error">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+        }
+
+        <!-- Reactive Form -->
+        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="premium-form">
+          <!-- Username Input Wrapper -->
+          <div class="input-group" [class.is-invalid]="isFieldInvalid('username')">
+            <label for="username" class="input-label">Username</label>
+            <div class="input-field-container">
+              <span class="input-icon-wrapper">
+                <svg lucideIcon="user" class="field-icon"></svg>
+              </span>
+              <input
+                id="username"
+                type="text"
+                formControlName="username"
+                placeholder="e.g. admin"
+                class="premium-input"
+                aria-describedby="username-error"
+                [attr.aria-invalid]="isFieldInvalid('username')"
+              />
+            </div>
+            @if (isFieldInvalid('username')) {
+              <span id="username-error" class="field-error-message" role="alert">
+                {{ loginForm.get('username')?.errors?.['required'] ? 'Username is required.' : (loginForm.get('username')?.errors?.['minlength'] ? 'Username must be at least 3 characters.' : '') }}
+              </span>
+            }
+          </div>
+
+          <!-- Password Input Wrapper -->
+          <div class="input-group" [class.is-invalid]="isFieldInvalid('password')">
+            <label for="password" class="input-label">Password</label>
+            <div class="input-field-container">
+              <span class="input-icon-wrapper">
+                <svg lucideIcon="lock" class="field-icon"></svg>
+              </span>
+              <input
+                id="password"
+                [type]="showPassword ? 'text' : 'password'"
+                formControlName="password"
+                placeholder="••••••••"
+                class="premium-input"
+                aria-describedby="password-error"
+                [attr.aria-invalid]="isFieldInvalid('password')"
+              />
+              <button
+                type="button"
+                class="password-toggle-btn"
+                (click)="togglePasswordVisibility()"
+                [attr.aria-label]="showPassword ? 'Hide password' : 'Show password'"
+              >
+                <svg [lucideIcon]="showPassword ? 'eye-off' : 'eye'" class="toggle-icon"></svg>
+              </button>
+            </div>
+            @if (isFieldInvalid('password')) {
+              <span id="password-error" class="field-error-message" role="alert">
+                {{ loginForm.get('password')?.errors?.['required'] ? 'Password is required.' : (loginForm.get('password')?.errors?.['minlength'] ? 'Password must be at least 6 characters.' : '') }}
+              </span>
+            }
+          </div>
+
+          <!-- Remember Me / Forgot Password links -->
+          <div class="form-options">
+            <label class="remember-me-checkbox-label">
+              <input type="checkbox" class="remember-me-checkbox" />
+              <span class="checkbox-custom"></span>
+              <span class="checkbox-label-text">Remember me</span>
+            </label>
+            <a href="javascript:void(0)" class="forgot-password-link">Forgot Password?</a>
+          </div>
+
+          <!-- Submit Button -->
+          <button
+            type="submit"
+            [disabled]="isLoading"
+            class="premium-submit-btn"
+            [class.is-loading]="isLoading"
+          >
+            @if (isLoading) {
+              <!-- Standard Spinner -->
+              <svg class="btn-spinner" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3" class="opacity-25"/>
+                <path d="M4 12a8 8 0 0 1 8-8V0C5.373 0 0 5.373 0 12h4z" fill="currentColor" class="opacity-75"/>
+              </svg>
+            }
+            <span class="submit-btn-text">
+              {{ isLoading ? 'Signing In...' : 'Sign In' }}
+            </span>
+            @if (!isLoading) {
+              <svg lucideIcon="arrow-right" class="btn-arrow-icon"></svg>
+            }
+          </button>
+        </form>
+
+        <!-- Divider & Demo Credentials -->
+        <div class="credentials-divider">
+          <span class="divider-line"></span>
+          <span class="divider-text">Or Use Demo Account</span>
+          <span class="divider-line"></span>
+        </div>
+
+        <div class="demo-credentials-card">
+          <div class="demo-card-header">
+            <span class="demo-badge">Demo Account</span>
+          </div>
+          <div class="demo-card-body">
+            <div class="demo-credential-row">
+              <span class="demo-label">Username</span>
+              <code class="demo-value">user</code>
+            </div>
+            <div class="demo-credential-row">
+              <span class="demo-label">Password</span>
+              <code class="demo-value">Password123</code>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer centered under the card/view -->
+    <footer class="redesigned-footer">
+      <p class="copyright">&copy; 2026 Currency Converter. All rights reserved.</p>
+    </footer>
   </div>
 </div>

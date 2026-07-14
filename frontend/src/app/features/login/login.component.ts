@@ -3,12 +3,18 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
 import { HttpErrorResponse } from '@angular/common/http';
+import { LucideDynamicIcon } from '@lucide/angular';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [ReactiveFormsModule, RouterLink],
-  templateUrl: './login.component.html'
+  imports: [
+    ReactiveFormsModule, 
+    RouterLink, 
+    LucideDynamicIcon
+  ],
+  templateUrl: './login.component.html',
+  styleUrl: './login.component.scss'
 })
 export class LoginComponent {
   private readonly fb = inject(FormBuilder);
@@ -22,6 +28,11 @@ export class LoginComponent {
 
   isLoading = false;
   errorMessage: string | null = null;
+  showPassword = false;
+
+  togglePasswordVisibility(): void {
+    this.showPassword = !this.showPassword;
+  }
 
   onSubmit(): void {
     if (this.loginForm.invalid) {

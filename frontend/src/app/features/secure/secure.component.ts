@@ -3,12 +3,30 @@ import { AuthService } from '../../core/services/auth.service';
 import { User } from '../../core/models/user.model';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
+import { NavbarComponent } from '../../shared/layout/navbar/navbar.component';
+import { ButtonComponent } from '../../shared/components/button/button.component';
+import { CardComponent } from '../../shared/components/card/card.component';
+import { BadgeComponent } from '../../shared/components/badge/badge.component';
+import { SpinnerComponent } from '../../shared/components/spinner/spinner.component';
+import { AlertComponent } from '../../shared/components/alert/alert.component';
+import { LucideDynamicIcon } from '@lucide/angular';
 
 @Component({
   selector: 'app-secure',
   standalone: true,
-  imports: [CommonModule, RouterLink],
-  templateUrl: './secure.component.html'
+  imports: [
+    CommonModule, 
+    RouterLink, 
+    NavbarComponent, 
+    ButtonComponent, 
+    CardComponent, 
+    BadgeComponent, 
+    SpinnerComponent, 
+    AlertComponent, 
+    LucideDynamicIcon
+  ],
+  templateUrl: './secure.component.html',
+  styleUrl: './secure.component.scss'
 })
 export class SecureComponent implements OnInit {
   readonly authService = inject(AuthService);

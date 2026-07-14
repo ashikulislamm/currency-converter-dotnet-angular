@@ -1,227 +1,170 @@
-<div class="relative min-h-screen flex flex-col justify-between bg-slate-950 text-slate-100 font-sans overflow-hidden">
-  <!-- Glowing Background Orbs -->
-  <div class="absolute top-[-15%] left-[-15%] w-[60%] h-[60%] rounded-full bg-violet-600/10 blur-[130px] pointer-events-none"></div>
-  <div class="absolute bottom-[-15%] right-[-15%] w-[60%] h-[60%] rounded-full bg-cyan-600/10 blur-[130px] pointer-events-none"></div>
-
-  <!-- Header -->
-  <header class="relative z-10 w-full max-w-7xl mx-auto px-6 py-5 flex justify-between items-center border-b border-slate-800/50 backdrop-blur-md">
-    <div class="flex items-center gap-3">
-      <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-violet-600 to-cyan-400 flex items-center justify-center shadow-md">
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-        </svg>
-      </div>
-      <a routerLink="/secure" class="text-lg font-bold tracking-tight bg-gradient-to-r from-slate-50 to-slate-300 bg-clip-text text-transparent hover:opacity-80 transition-opacity">Antigravity FX</a>
-    </div>
-    
-    <div class="flex items-center gap-4">
-      <div class="hidden sm:flex flex-col text-right">
-        <span class="text-xs text-slate-400">Authenticated as</span>
-        <span class="text-sm font-semibold text-slate-200">{{ authService.currentUser()?.displayName || 'Loading...' }}</span>
-      </div>
-      <button 
-        (click)="authService.logout()" 
-        class="px-4 py-2 rounded-xl text-sm font-medium bg-slate-800/80 hover:bg-rose-500/10 hover:text-rose-400 border border-slate-700 hover:border-rose-500/25 transition-all duration-300 flex items-center gap-1.5"
-      >
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-        </svg>
-        Log Out
-      </button>
-    </div>
-  </header>
+<div class="currency-wrapper">
+  <!-- Sticky Navbar Header -->
+  <app-navbar></app-navbar>
 
   <!-- Main Body -->
-  <main class="relative z-10 w-full max-w-3xl mx-auto px-6 py-12 flex-grow flex flex-col gap-6">
+  <main class="currency-main">
     <!-- Breadcrumb -->
-    <nav class="flex items-center gap-2 text-sm text-slate-500">
-      <a routerLink="/secure" class="hover:text-slate-300 transition-colors">Dashboard</a>
-      <span class="text-slate-700">/</span>
-      <span class="text-slate-300 font-medium">Currency Converter</span>
+    <nav class="breadcrumb">
+      <a routerLink="/secure">Dashboard</a>
+      <span class="divider">/</span>
+      <span class="active">Currency Converter</span>
     </nav>
 
-    <!-- Page Title -->
-    <div class="space-y-1">
-      <h1 class="text-3xl font-extrabold tracking-tight text-white">
-        Currency Converter
-      </h1>
-      <p class="text-slate-450 text-sm">Convert and check foreign exchange rates powered by live API updates.</p>
+    <!-- Page Header -->
+    <div class="page-header-section">
+      <h1 class="title">Currency Converter</h1>
+      <p class="description">Convert currencies and review foreign exchange rates powered by live API updates.</p>
     </div>
 
     <!-- Main Card -->
-    <div class="bg-slate-900/55 border border-slate-800 rounded-3xl p-8 backdrop-blur-xl shadow-2xl space-y-6">
-      
-      <!-- Loading Currencies State -->
+    <app-card>
+      <!-- Loading Supported Currencies State -->
       @if (isLoadingCurrencies()) {
-        <div class="py-16 flex flex-col items-center justify-center gap-3">
-          <svg class="animate-spin h-10 w-10 text-violet-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-          </svg>
-          <span class="text-sm text-slate-400 font-medium">Loading supported currencies from API...</span>
+        <div class="loading-center">
+          <app-spinner size="lg"></app-spinner>
+          <span>Loading supported currencies from API...</span>
         </div>
       } @else {
         
-        <!-- Error alert message -->
+        <!-- Error Alert Message -->
         @if (errorMessage()) {
-          <div class="flex items-start gap-3 p-4 rounded-2xl bg-rose-500/10 border border-rose-500/20 text-rose-450 text-sm animate-fade-in">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 flex-shrink-0 text-rose-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-            </svg>
-            <div class="flex-grow">
-              <span class="font-bold text-rose-400">Conversion System Error</span>
-              <p class="mt-0.5 opacity-90 leading-relaxed">{{ errorMessage() }}</p>
+          <app-alert variant="error" title="System Error">
+            {{ errorMessage() }}
+            <div style="margin-top: var(--space-2)">
+              <app-button variant="secondary" (click)="loadCurrencies()">Retry Loading</app-button>
             </div>
-            <button (click)="loadCurrencies()" class="text-xs font-semibold px-2.5 py-1 rounded bg-rose-500/10 text-rose-400 border border-rose-500/25 hover:bg-rose-500/20 transition-all">Retry Link</button>
-          </div>
+          </app-alert>
         }
 
         <!-- Conversion Form -->
-        <form [formGroup]="convertForm" (ngSubmit)="onSubmit()" class="space-y-6">
-          <div class="grid grid-cols-1 md:grid-cols-7 items-end gap-4 relative">
+        <form [formGroup]="convertForm" (ngSubmit)="onSubmit()" class="converter-form-layout">
+          <div class="inputs-row">
             
-            <!-- Amount Input (Spans 3 cols on desktop) -->
-            <div class="md:col-span-3 space-y-1.5">
-              <label for="amount" class="text-xs font-semibold tracking-wider text-slate-400 uppercase">Amount to Convert</label>
-              <div class="relative">
-                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-500 font-semibold">
-                  $
-                </div>
-                <input 
-                  id="amount"
-                  type="number"
-                  step="0.01"
-                  min="0.01"
-                  formControlName="amount"
-                  placeholder="100.00"
-                  class="w-full pl-8 pr-4 py-3 rounded-xl bg-slate-950/50 border text-slate-100 placeholder-slate-650 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500 transition-all duration-200"
-                  [class.border-rose-500]="isFieldInvalid('amount')"
-                  [class.border-slate-800]="!isFieldInvalid('amount')"
-                />
-              </div>
-              @if (isFieldInvalid('amount')) {
-                <div class="text-xs text-rose-400 font-medium pl-1">
-                  @if (convertForm.get('amount')?.errors?.['required']) {
-                    Amount is required.
-                  }
-                  @if (convertForm.get('amount')?.errors?.['min']) {
-                    Amount must be greater than zero.
-                  }
-                </div>
-              }
-            </div>
+            <!-- Amount Input -->
+            <app-form-field 
+              label="Amount to Convert" 
+              forId="amount"
+              [invalid]="isFieldInvalid('amount')"
+              [error]="convertForm.get('amount')?.errors?.['required'] ? 'Amount is required.' : (convertForm.get('amount')?.errors?.['min'] ? 'Amount must be greater than zero.' : null)"
+            >
+              <app-input
+                id="amount"
+                type="number"
+                step="0.01"
+                [min]="0.01"
+                formControlName="amount"
+                placeholder="100.00"
+                icon="dollar-sign"
+                [invalid]="isFieldInvalid('amount')"
+              ></app-input>
+            </app-form-field>
 
-            <!-- Source Dropdown (Spans 2 cols on desktop) -->
-            <div class="md:col-span-2 space-y-1.5">
-              <label for="from" class="text-xs font-semibold tracking-wider text-slate-400 uppercase">From Currency</label>
+            <!-- Source Dropdown -->
+            <app-form-field 
+              label="From Currency" 
+              forId="from"
+              [invalid]="isFieldInvalid('from')"
+              [error]="convertForm.get('from')?.errors?.['required'] ? 'Source currency is required.' : null"
+            >
               <select 
-                id="from"
+                id="from" 
                 formControlName="from"
-                class="w-full px-3 py-3 rounded-xl bg-slate-950/50 border text-slate-100 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500 transition-all duration-200 appearance-none cursor-pointer"
-                [class.border-rose-500]="isFieldInvalid('from')"
-                [class.border-slate-800]="!isFieldInvalid('from')"
+                class="form-select"
+                [class.is-invalid]="isFieldInvalid('from')"
               >
                 @for (curr of currencies(); track curr.code) {
-                  <option [value]="curr.code" class="bg-slate-900 text-slate-100">{{ curr.code }} - {{ curr.name }}</option>
+                  <option [value]="curr.code">{{ curr.code }} - {{ curr.name }}</option>
                 }
               </select>
-            </div>
+            </app-form-field>
 
-            <!-- Swap Button (Spans 1 col on desktop) -->
-            <div class="md:col-span-1 flex justify-center pb-1">
+            <!-- Swap Button -->
+            <div class="swap-button-col">
               <button 
                 type="button" 
+                class="swap-btn" 
                 (click)="swapCurrencies()"
                 title="Swap Currencies"
-                class="w-11 h-11 rounded-full bg-slate-950 border border-slate-800 hover:border-violet-500/55 hover:bg-violet-950/20 text-slate-400 hover:text-violet-400 flex items-center justify-center transition-all duration-300 hover:rotate-180"
               >
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
-                </svg>
+                <svg lucideIcon="arrow-left-right" class="swap-icon"></svg>
               </button>
             </div>
 
-            <!-- Destination Dropdown (Spans 2 cols on desktop) -->
-            <div class="md:col-span-2 space-y-1.5">
-              <label for="to" class="text-xs font-semibold tracking-wider text-slate-400 uppercase">To Currency</label>
+            <!-- Destination Dropdown -->
+            <app-form-field 
+              label="To Currency" 
+              forId="to"
+              [invalid]="isFieldInvalid('to')"
+              [error]="convertForm.get('to')?.errors?.['required'] ? 'Destination currency is required.' : null"
+            >
               <select 
-                id="to"
+                id="to" 
                 formControlName="to"
-                class="w-full px-3 py-3 rounded-xl bg-slate-950/50 border text-slate-100 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500 transition-all duration-200 appearance-none cursor-pointer"
-                [class.border-rose-500]="isFieldInvalid('to')"
-                [class.border-slate-800]="!isFieldInvalid('to')"
+                class="form-select"
+                [class.is-invalid]="isFieldInvalid('to')"
               >
                 @for (curr of currencies(); track curr.code) {
-                  <option [value]="curr.code" class="bg-slate-900 text-slate-100">{{ curr.code }} - {{ curr.name }}</option>
+                  <option [value]="curr.code">{{ curr.code }} - {{ curr.name }}</option>
                 }
               </select>
-            </div>
+            </app-form-field>
 
           </div>
 
           <!-- Submit Button -->
-          <button 
-            type="submit"
-            [disabled]="isConverting() || isLoadingCurrencies()"
-            class="w-full py-4 rounded-xl font-bold bg-gradient-to-r from-violet-600 to-cyan-500 text-white shadow-xl shadow-violet-500/15 hover:shadow-violet-500/30 hover:scale-[1.01] active:scale-[0.99] disabled:opacity-50 disabled:scale-100 disabled:shadow-none transition-all duration-300 flex items-center justify-center gap-2"
+          <app-button 
+            type="submit" 
+            [loading]="isConverting()" 
+            [disabled]="isLoadingCurrencies()"
+            [fullWidth]="true"
+            style="margin-top: var(--space-2);"
           >
-            @if (isConverting()) {
-              <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-              </svg>
-              Querying External Exchange Rates...
-            } @else {
-              Convert Currencies
-            }
-          </button>
+            <span>Convert Currencies</span>
+          </app-button>
         </form>
       }
 
-      <!-- Result Section -->
+      <!-- Result Card -->
       @if (successResult()) {
-        <div class="p-6 rounded-2xl bg-gradient-to-tr from-violet-950/20 to-cyan-950/20 border border-violet-800/20 space-y-4 animate-fade-in relative overflow-hidden">
-          <div class="absolute top-0 right-0 w-24 h-24 bg-violet-600/5 rounded-full blur-xl pointer-events-none"></div>
-          
-          <div class="space-y-1">
-            <div class="text-sm font-semibold text-slate-400">
+        <div class="result-card">
+          <div class="result-calculation">
+            <span class="calculation-original">
               {{ successResult()?.originalAmount | number:'1.2-2' }} {{ successResult()?.from }} =
-            </div>
-            <div class="text-3xl font-extrabold text-white tracking-tight flex items-baseline gap-2">
-              <span class="bg-gradient-to-r from-slate-50 to-slate-200 bg-clip-text text-transparent">
-                {{ successResult()?.convertedAmount | number:'1.2-4' }}
-              </span>
-              <span class="text-xl font-bold bg-gradient-to-r from-violet-400 to-cyan-300 bg-clip-text text-transparent">
-                {{ successResult()?.to }}
-              </span>
-            </div>
+            </span>
+            <h2 class="calculation-result">
+              <span>{{ successResult()?.convertedAmount | number:'1.2-4' }}</span>
+              <span class="currency-code">{{ successResult()?.to }}</span>
+            </h2>
           </div>
 
-          <div class="pt-3 border-t border-slate-800/40 grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs text-slate-500">
-            <div class="space-y-1">
+          <div class="result-meta-grid">
+            <div class="rate-details">
               <div>
-                Exchange Rate: <span class="text-slate-300 font-semibold">1 {{ successResult()?.from }} = {{ successResult()?.exchangeRate | number:'1.2-6' }} {{ successResult()?.to }}</span>
+                Exchange Rate: <span class="rate-span">1 {{ successResult()?.from }} = {{ successResult()?.exchangeRate | number:'1.2-6' }} {{ successResult()?.to }}</span>
               </div>
               <div>
-                Inverse Rate: <span class="text-slate-300 font-semibold">1 {{ successResult()?.to }} = {{ (1 / (successResult()?.exchangeRate || 1)) | number:'1.2-6' }} {{ successResult()?.from }}</span>
+                Inverse Rate: <span class="rate-span">1 {{ successResult()?.to }} = {{ (1 / (successResult()?.exchangeRate || 1)) | number:'1.2-6' }} {{ successResult()?.from }}</span>
               </div>
             </div>
-            <div class="sm:text-right flex items-end justify-start sm:justify-end text-[10px]">
-              Last updated: {{ successResult()?.timestamp | date:'medium' }}
+            <div class="timestamp-details">
+              <span>Exchange rate updated:</span><br />
+              <strong style="color: var(--color-text-primary)">{{ successResult()?.timestamp | date:'medium' }}</strong>
             </div>
           </div>
         </div>
       }
-
-    </div>
+    </app-card>
   </main>
 
   <!-- Footer -->
-  <footer class="relative z-10 w-full max-w-7xl mx-auto px-6 py-6 flex flex-col sm:flex-row justify-between items-center border-t border-slate-800/40 text-sm text-slate-500 gap-4">
-    <p>&copy; 2026 Antigravity FX. All rights reserved.</p>
-    <div class="flex gap-6">
-      <a class="hover:text-slate-300 transition-colors">Data Providers</a>
-      <a class="hover:text-slate-300 transition-colors">API Agreement</a>
+  <footer class="currency-footer">
+    <div class="footer-container">
+      <p>&copy; 2026 Antigravity FX. All rights reserved.</p>
+      <div class="footer-links">
+        <a href="javascript:void(0)">Data Policy</a>
+        <a href="javascript:void(0)">API terms</a>
+      </div>
     </div>
   </footer>
 </div>

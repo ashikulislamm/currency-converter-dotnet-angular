@@ -6,12 +6,33 @@ import { CurrencyService } from '../../core/services/currency.service';
 import { AuthService } from '../../core/services/auth.service';
 import { Currency, ConvertResponse } from '../../core/models/currency.model';
 import { HttpErrorResponse } from '@angular/common/http';
+import { NavbarComponent } from '../../shared/layout/navbar/navbar.component';
+import { ButtonComponent } from '../../shared/components/button/button.component';
+import { CardComponent } from '../../shared/components/card/card.component';
+import { SpinnerComponent } from '../../shared/components/spinner/spinner.component';
+import { AlertComponent } from '../../shared/components/alert/alert.component';
+import { InputComponent } from '../../shared/components/input/input.component';
+import { FormFieldComponent } from '../../shared/components/form-field/form-field.component';
+import { LucideDynamicIcon } from '@lucide/angular';
 
 @Component({
   selector: 'app-currency',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink],
-  templateUrl: './currency.component.html'
+  imports: [
+    CommonModule, 
+    ReactiveFormsModule, 
+    RouterLink,
+    NavbarComponent,
+    ButtonComponent,
+    CardComponent,
+    SpinnerComponent,
+    AlertComponent,
+    InputComponent,
+    FormFieldComponent,
+    LucideDynamicIcon
+  ],
+  templateUrl: './currency.component.html',
+  styleUrl: './currency.component.scss'
 })
 export class CurrencyComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
