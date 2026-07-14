@@ -14,7 +14,7 @@ export class AuthService {
   private readonly platformId = inject(PLATFORM_ID);
   
   private readonly isBrowser = isPlatformBrowser(this.platformId);
-  private readonly apiUrl = 'http://localhost:5285/api/auth';
+  private readonly apiUrl = 'https://localhost:7118/api/auth';
 
   private readonly currentUserSignal = signal<User | null>(null);
   
@@ -93,6 +93,27 @@ export class AuthService {
    */
   getMe(): Observable<ApiResponse<User>> {
     return this.http.get<ApiResponse<User>>(`${this.apiUrl}/me`);
+  }
+
+  /**
+   * Completes the OAuth callback authentication flow.
+   */
+  handleCallback(token: string): Observable<ApiResponse<User>> {
+    if (this.isBrowser) {
+      localStorage.setItem('token', token);
+    }
+    return this.getMe().pipe(
+      tap((response) => {
+        if (response.success && response.data) {
+          if (this.isBrowser) {
+            localStorage.setItem('user', JSON.stringify(response.data));
+          }
+          this.currentUserSignal.set(response.data);
+        } else {
+          this.logout();
+        }
+      })
+    );
   }
 
   /**

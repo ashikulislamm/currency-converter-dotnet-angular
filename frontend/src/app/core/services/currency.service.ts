@@ -9,7 +9,7 @@ import { Currency, ConvertRequest, ConvertResponse } from '../models/currency.mo
 })
 export class CurrencyService {
   private readonly http = inject(HttpClient);
-  private readonly apiUrl = 'http://localhost:5285/api/currency';
+  private readonly apiUrl = 'https://localhost:7118/api/currency';
 
   /**
    * Fetches all supported currencies from the backend API.

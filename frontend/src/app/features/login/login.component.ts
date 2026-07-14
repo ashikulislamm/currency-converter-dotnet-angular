@@ -66,6 +66,10 @@ export class LoginComponent {
     });
   }
 
+  loginWithGoogle(): void {
+    window.location.href = 'https://localhost:7118/api/auth/google-login';
+  }
+
   isFieldInvalid(field: string): boolean {
     const control = this.loginForm.get(field);
     return !!(control && control.invalid && (control.dirty || control.touched));

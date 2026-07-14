@@ -5,6 +5,10 @@ export interface User {
   username: string;
   displayName: string;
   role: string;
+  email?: string;
+  profilePicture?: string;
+  provider?: string;
+  loginMethod?: string;
 }
 
 /**

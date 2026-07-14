@@ -633,4 +633,46 @@
   }
 }
 
+/* Google OAuth Button */
+.google-signin-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  width: 100%;
+  height: 52px;
+  border: 1px solid var(--login-border);
+  border-radius: var(--login-radius-button);
+  background-color: #FFFFFF;
+  color: var(--login-text-primary);
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+  transition: transform var(--login-transition), box-shadow var(--login-transition), background-color var(--login-transition);
+  outline: none;
+  margin-top: 8px;
+
+  .google-icon {
+    width: 20px;
+    height: 20px;
+  }
+
+  .google-btn-text {
+    font-weight: 600;
+  }
+
+  &:hover:not(:disabled) {
+    background-color: #F8FAFC;
+    border-color: #CBD5E1;
+    transform: translateY(-1px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.04);
+  }
+
+  &:active:not(:disabled) {
+    transform: translateY(0);
+    background-color: #F1F5F9;
+  }
+}
+
 

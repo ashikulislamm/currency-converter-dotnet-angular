@@ -126,6 +126,23 @@
               <svg lucideIcon="arrow-right" class="btn-arrow-icon"></svg>
             }
           </button>
+
+          <!-- OR Divider -->
+          <div class="credentials-divider">
+            <span class="divider-line"></span>
+            <span class="divider-text">OR</span>
+            <span class="divider-line"></span>
+          </div>
+
+          <!-- Google Authentication Button -->
+          <button
+            type="button"
+            class="google-signin-btn"
+            (click)="loginWithGoogle()"
+          >
+            <img src="/google-icon.svg" class="google-icon" alt="Google Icon" />
+            <span class="google-btn-text">Continue with Google</span>
+          </button>
         </form>
 
         <!-- Divider & Demo Credentials -->

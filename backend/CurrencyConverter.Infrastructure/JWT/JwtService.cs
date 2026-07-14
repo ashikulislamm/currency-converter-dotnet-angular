@@ -36,8 +36,21 @@ public class JwtService : IJwtService
             new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
             new(ClaimTypes.Name, user.Username),
             new(ClaimTypes.Role, user.Role),
-            new("displayName", user.DisplayName)
+            new("displayName", user.DisplayName),
+            new("provider", user.Provider),
+            new("loginMethod", user.LoginMethod),
+            new("authType", user.Provider)
         };
+
+        if (!string.IsNullOrEmpty(user.Email))
+        {
+            claims.Add(new(ClaimTypes.Email, user.Email));
+        }
+
+        if (!string.IsNullOrEmpty(user.ProfilePicture))
+        {
+            claims.Add(new("profilePicture", user.ProfilePicture));
+        }
 
         var tokenDescriptor = new SecurityTokenDescriptor
         {

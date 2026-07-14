@@ -35,19 +35,49 @@
         <!-- Profile details -->
         @if (!isLoadingProfile() && userProfile()) {
           <div class="profile-details-list">
-            <div class="profile-detail-item">
-              <span class="detail-label">Username</span>
-              <span class="detail-value">{{ userProfile()?.username }}</span>
-            </div>
-            
+            <!-- Profile Picture (Google Only) -->
+            @if (userProfile()?.profilePicture) {
+              <div class="profile-pic-container" style="display: flex; justify-content: center; margin-bottom: 20px;">
+                <img [src]="userProfile()?.profilePicture" alt="Profile Picture" style="width: 80px; height: 80px; border-radius: 50%; border: 3px solid var(--color-primary, #2563EB); box-shadow: 0 4px 10px rgba(0,0,0,0.1);" />
+              </div>
+            }
+
             <div class="profile-detail-item">
               <span class="detail-label">Display Name</span>
               <span class="detail-value">{{ userProfile()?.displayName }}</span>
             </div>
+
+            @if (userProfile()?.email) {
+              <div class="profile-detail-item">
+                <span class="detail-label">Email</span>
+                <span class="detail-value">{{ userProfile()?.email }}</span>
+              </div>
+            }
+
+            @if (userProfile()?.provider !== 'Google') {
+              <div class="profile-detail-item">
+                <span class="detail-label">Username</span>
+                <span class="detail-value">{{ userProfile()?.username }}</span>
+              </div>
+            }
             
             <div class="profile-detail-item">
               <span class="detail-label">System Role</span>
               <span class="detail-value">{{ userProfile()?.role }}</span>
+            </div>
+
+            <div class="profile-detail-item">
+              <span class="detail-label">Authentication Provider</span>
+              <span class="detail-value">{{ userProfile()?.provider || 'Local' }}</span>
+            </div>
+
+            <!-- Custom status badge showing how user authenticated -->
+            <div class="profile-auth-method-row" style="margin-top: 20px; padding-top: 16px; border-top: 1px solid #E2E8F0; display: flex; flex-direction: column; gap: 8px; text-align: left;">
+              <span style="font-size: 11px; text-transform: uppercase; font-weight: 700; color: #64748B; letter-spacing: 0.05em;">Authentication Method</span>
+              <div style="display: flex; align-items: center; gap: 8px; font-weight: 600; font-size: 14px; color: #0F172A;">
+                <span style="display: inline-block; width: 10px; height: 10px; background-color: #22C55E; border-radius: 50%; box-shadow: 0 0 8px #22C55E;"></span>
+                <span>{{ userProfile()?.loginMethod || 'Local Credentials' }}</span>
+              </div>
             </div>
           </div>
         }

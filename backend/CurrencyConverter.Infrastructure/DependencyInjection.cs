@@ -5,6 +5,7 @@ using CurrencyConverter.Infrastructure.JWT;
 using CurrencyConverter.Infrastructure.Options;
 using CurrencyConverter.Infrastructure.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
@@ -65,6 +66,15 @@ public static class DependencyInjection
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddCookie("GoogleCookie")
+            .AddGoogle(options =>
+            {
+                options.ClientId = configuration["Authentication:Google:ClientId"] ?? string.Empty;
+                options.ClientSecret = configuration["Authentication:Google:ClientSecret"] ?? string.Empty;
+                options.SignInScheme = "GoogleCookie";
+                options.CallbackPath = "/signin-google"; // Default intercept path
+                options.ClaimActions.MapJsonKey("urn:google:picture", "picture");
             })
             .AddJwtBearer(options =>
             {
