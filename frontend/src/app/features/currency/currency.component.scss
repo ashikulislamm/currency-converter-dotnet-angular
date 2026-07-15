@@ -1,14 +1,7 @@
 @use '../../../styles/variables' as *;
 @use '../../../styles/mixins' as *;
 
-.currency-wrapper {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  background-color: var(--color-background);
-  color: var(--color-text-primary);
-}
+
 
 .currency-main {
   flex-grow: 1;
@@ -249,39 +242,12 @@
   }
 }
 
-/* Footer styling */
-.currency-footer {
-  border-top: 1px solid var(--color-border);
-  background-color: var(--color-surface);
+.block-button {
+  display: block;
+  width: 100%;
 }
 
-.footer-container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: var(--space-4) var(--space-4);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  font-size: var(--font-size-small);
-  color: var(--color-text-secondary);
-
-  @include mobile {
-    flex-direction: column;
-    gap: var(--space-2);
-    text-align: center;
-  }
+.timestamp-value {
+  color: var(--color-text-primary);
 }
 
-.footer-links {
-  display: flex;
-  gap: var(--space-4);
-
-  a {
-    color: var(--color-text-secondary);
-    font-weight: 500;
-
-    &:hover {
-      color: var(--color-text-primary);
-    }
-  }
-}

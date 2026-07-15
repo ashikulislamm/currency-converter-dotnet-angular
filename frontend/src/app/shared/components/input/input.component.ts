@@ -15,13 +15,13 @@ import { LucideDynamicIcon } from '@lucide/angular';
     }
   ],
   template: `
-    <div class="input-wrapper" [class.has-icon]="icon()" [class.is-disabled]="disabled()">
+    <div class="input-wrapper" [class.has-icon]="icon()" [class.is-disabled]="disabled()" [class.has-toggle]="type() === 'password'">
       @if (icon()) {
         <svg [lucideIcon]="icon()!" class="input-icon"></svg>
       }
       <input
         [id]="id()"
-        [type]="type()"
+        [type]="inputType()"
         [placeholder]="placeholder()"
         [value]="value()"
         [disabled]="disabled()"
@@ -32,6 +32,16 @@ import { LucideDynamicIcon } from '@lucide/angular';
         class="custom-input"
         [class.is-invalid]="invalid()"
       />
+      @if (type() === 'password') {
+        <button
+          type="button"
+          class="password-toggle-btn"
+          (click)="togglePasswordVisibility()"
+          [attr.aria-label]="showPassword() ? 'Hide password' : 'Show password'"
+        >
+          <svg [lucideIcon]="showPassword() ? 'eye-off' : 'eye'" class="toggle-icon"></svg>
+        </button>
+      }
     </div>
   `,
   styles: [`
@@ -79,6 +89,13 @@ import { LucideDynamicIcon } from '@lucide/angular';
       }
     }
 
+    /* Has toggle styling */
+    .has-toggle {
+      .custom-input {
+        padding-right: 44px;
+      }
+    }
+
     .input-icon {
       position: absolute;
       left: 16px;
@@ -92,6 +109,31 @@ import { LucideDynamicIcon } from '@lucide/angular';
 
     .custom-input:focus + .input-icon {
       color: var(--color-primary);
+    }
+
+    /* Password toggle button */
+    .password-toggle-btn {
+      position: absolute;
+      right: 16px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--color-text-secondary);
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: color var(--transition-fast);
+      z-index: 2;
+
+      &:hover {
+        color: var(--color-text-primary);
+      }
+    }
+
+    .toggle-icon {
+      width: 18px;
+      height: 18px;
     }
 
     /* Invalid validation styling */
@@ -119,6 +161,18 @@ export class InputComponent implements ControlValueAccessor {
 
   protected value = signal<any>('');
   protected disabled = signal<boolean>(false);
+  protected showPassword = signal<boolean>(false);
+
+  protected inputType(): string {
+    if (this.type() === 'password') {
+      return this.showPassword() ? 'text' : 'password';
+    }
+    return this.type();
+  }
+
+  protected togglePasswordVisibility(): void {
+    this.showPassword.update(show => !show);
+  }
 
   // Callbacks registered by the forms API
   private onChange: (value: any) => void = () => {};

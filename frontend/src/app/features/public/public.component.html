@@ -1,129 +1,117 @@
-<div class="landing-wrapper bg-subtle-glow">
-  <!-- Sticky Navbar -->
-  <app-navbar></app-navbar>
-
-  <!-- Hero Content -->
-  <main class="hero-main">
-    <div class="hero-content animate-fade-in">
-      <div class="hero-badge-container">
-        <app-badge variant="primary">
-          <span class="pulse-indicator">
-            <span class="pulse-ring"></span>
-            <span class="pulse-dot"></span>
-          </span>
-          <span style="margin-left: 8px;">Open Access Rates Portal</span>
-        </app-badge>
-      </div>
-
-      <h1 class="hero-headline">
-        Global Exchange, <br />
-        <span class="gradient-text">Simplified.</span>
-      </h1>
-
-      <p class="hero-description">
-        Antigravity FX is a production-grade, secure exchange rate service. Access live updates, manage portfolios, and calculate rates in real time.
-      </p>
-
-      <div class="hero-actions">
-        @if (authService.isAuthenticated()) {
-          <app-button variant="primary" routerLink="/secure">
-            <span>Secure Portal Dashboard</span>
-            <svg lucideIcon="arrow-right" style="width: 16px; height: 16px;"></svg>
-          </app-button>
-        } @else {
-          <app-button variant="primary" routerLink="/login">
-            <span>Authenticate to Access Portal</span>
-            <svg lucideIcon="arrow-right" style="width: 16px; height: 16px;"></svg>
-          </app-button>
-        }
-      </div>
+<!-- Hero Content -->
+<main class="hero-main">
+  <div class="hero-content animate-fade-in">
+    <div class="hero-badge-container">
+      <app-badge variant="primary">
+        <span class="pulse-indicator">
+          <span class="pulse-ring"></span>
+          <span class="pulse-dot"></span>
+        </span>
+        <span style="margin-left: 8px;">Open Access Rates Portal</span>
+      </app-badge>
     </div>
 
-    <!-- Right Graphic Showcase Card -->
-    <div class="hero-graphic animate-fade-in">
-      <div class="glow-orb"></div>
-      <div class="showcase-card-wrapper">
-        <app-card>
-          <div card-header class="showcase-header">
-            <span class="showcase-title-label">Live Exchange Pair</span>
-            <app-badge variant="success">+1.42%</app-badge>
-          </div>
+    <h1 class="hero-headline">
+      Global Exchange, <br />
+      <span class="gradient-text">Simplified.</span>
+    </h1>
 
-          <div class="pair-row">
-            <div class="pair-info">
-              <span class="pair-flag">🇺🇸</span>
-              <div>
-                <div class="pair-code">USD</div>
-                <div class="pair-name">United States Dollar</div>
-              </div>
-            </div>
-            <span class="pair-value">1.0000</span>
-          </div>
+    <p class="hero-description">
+      Antigravity FX is a production-grade, secure exchange rate service. Access live updates, manage portfolios, and calculate rates in real time.
+    </p>
 
-          <div class="swap-divider">
-            <div class="swap-icon-container">
-              <svg lucideIcon="arrow-left-right" class="swap-icon"></svg>
+    <div class="hero-actions">
+      @if (authService.isAuthenticated()) {
+        <app-button variant="primary" routerLink="/secure">
+          <span>Secure Portal Dashboard</span>
+          <svg lucideIcon="arrow-right" style="width: 16px; height: 16px;"></svg>
+        </app-button>
+      } @else {
+        <app-button variant="primary" routerLink="/login">
+          <span>Authenticate to Access Portal</span>
+          <svg lucideIcon="arrow-right" style="width: 16px; height: 16px;"></svg>
+        </app-button>
+      }
+    </div>
+  </div>
+
+  <!-- Right Graphic Showcase Card -->
+  <div class="hero-graphic animate-fade-in">
+    <div class="glow-orb"></div>
+    <div class="showcase-card-wrapper">
+      <app-card>
+        <div card-header class="showcase-header">
+          <span class="showcase-title-label">Live Exchange Pair</span>
+          <app-badge variant="success">+1.42%</app-badge>
+        </div>
+
+        <div class="pair-row">
+          <div class="pair-info">
+            <span class="pair-flag">🇺🇸</span>
+            <div>
+              <div class="pair-code">USD</div>
+              <div class="pair-name">United States Dollar</div>
             </div>
           </div>
+          <span class="pair-value">1.0000</span>
+        </div>
 
-          <div class="pair-row">
-            <div class="pair-info">
-              <span class="pair-flag">🇪🇺</span>
-              <div>
-                <div class="pair-code">EUR</div>
-                <div class="pair-name">Euro Zone</div>
-              </div>
+        <div class="swap-divider">
+          <div class="swap-icon-container">
+            <svg lucideIcon="arrow-left-right" class="swap-icon"></svg>
+          </div>
+        </div>
+
+        <div class="pair-row">
+          <div class="pair-info">
+            <span class="pair-flag">🇪🇺</span>
+            <div>
+              <div class="pair-code">EUR</div>
+              <div class="pair-name">Euro Zone</div>
             </div>
-            <span class="pair-value value-active">0.9150</span>
           </div>
+          <span class="pair-value value-active">0.9150</span>
+        </div>
 
-          <div card-footer class="showcase-footer">
-            <span>Last Updated</span>
-            <span style="font-weight: 600;">Just now</span>
-          </div>
-        </app-card>
-      </div>
+        <div card-footer class="showcase-footer">
+          <span>Last Updated</span>
+          <span style="font-weight: 600;">Just now</span>
+        </div>
+      </app-card>
     </div>
-  </main>
+  </div>
+</main>
 
-  <!-- Features Grid Section -->
-  <section class="features-section">
-    <div class="features-container">
-      <div class="features-grid">
-        <!-- Feature 1 -->
-        <app-card [bordered]="true" elevation="none" class="hover-scale animate-fade-in">
-          <div class="feature-icon-box">
-            <svg lucideIcon="lock" style="width: 20px; height: 20px;"></svg>
-          </div>
-          <h3 class="feature-title">JWT Secured Endpoints</h3>
-          <p class="feature-text">Authorized requests use bearer token header validation with HMAC SHA256 signatures.</p>
-        </app-card>
+<!-- Features Grid Section -->
+<section class="features-section">
+  <div class="features-container">
+    <div class="features-grid">
+      <!-- Feature 1 -->
+      <app-card [bordered]="true" elevation="none" class="hover-scale animate-fade-in">
+        <div class="feature-icon-box">
+          <svg lucideIcon="lock" style="width: 20px; height: 20px;"></svg>
+        </div>
+        <h3 class="feature-title">JWT Secured Endpoints</h3>
+        <p class="feature-text">Authorized requests use bearer token header validation with HMAC SHA256 signatures.</p>
+      </app-card>
 
-        <!-- Feature 2 -->
-        <app-card [bordered]="true" elevation="none" class="hover-scale animate-fade-in">
-          <div class="feature-icon-box">
-            <svg lucideIcon="dollar-sign" style="width: 20px; height: 20px;"></svg>
-          </div>
-          <h3 class="feature-title">Real-time Live Computations</h3>
-          <p class="feature-text">Access live foreign exchange calculations with sub-second response times from API.</p>
-        </app-card>
+      <!-- Feature 2 -->
+      <app-card [bordered]="true" elevation="none" class="hover-scale animate-fade-in">
+        <div class="feature-icon-box">
+          <svg lucideIcon="dollar-sign" style="width: 20px; height: 20px;"></svg>
+        </div>
+        <h3 class="feature-title">Real-time Live Computations</h3>
+        <p class="feature-text">Access live foreign exchange calculations with sub-second response times from API.</p>
+      </app-card>
 
-        <!-- Feature 3 -->
-        <app-card [bordered]="true" elevation="none" class="hover-scale animate-fade-in">
-          <div class="feature-icon-box">
-            <svg lucideIcon="trending-up" style="width: 20px; height: 20px;"></svg>
-          </div>
-          <h3 class="feature-title">Historical Rates Analytics</h3>
-          <p class="feature-text">Follow market trends and inspect historical conversion fluctuations through dashboard.</p>
-        </app-card>
-      </div>
+      <!-- Feature 3 -->
+      <app-card [bordered]="true" elevation="none" class="hover-scale animate-fade-in">
+        <div class="feature-icon-box">
+          <svg lucideIcon="trending-up" style="width: 20px; height: 20px;"></svg>
+        </div>
+        <h3 class="feature-title">Historical Rates Analytics</h3>
+        <p class="feature-text">Follow market trends and inspect historical conversion fluctuations through dashboard.</p>
+      </app-card>
     </div>
-  </section>
-
-  <!-- Footer -->
-  <footer class="landing-footer items-center">
-    <div class="footer-container">
-      <p>&copy; 2026 Currency Converter. All rights reserved.</p>
-    </div>
-  </footer>
-</div>
+  </div>
+</section>

@@ -1,16 +1,34 @@
 import { Routes } from '@angular/router';
-import { PublicComponent } from './features/public/public.component';
-import { LoginComponent } from './features/login/login.component';
-import { SecureComponent } from './features/secure/secure.component';
-import { CurrencyComponent } from './features/currency/currency.component';
-import { AuthCallbackComponent } from './features/auth-callback/auth-callback.component';
 import { authGuard } from './core/guards/auth.guard';
 
 export const routes: Routes = [
-  { path: '', component: PublicComponent },
-  { path: 'login', component: LoginComponent },
-  { path: 'auth/callback', component: AuthCallbackComponent },
-  { path: 'secure', component: SecureComponent, canActivate: [authGuard] },
-  { path: 'currency-converter', component: CurrencyComponent, canActivate: [authGuard] },
+  {
+    path: '',
+    loadComponent: () => import('./shared/layout/shell/shell.component').then(m => m.ShellComponent),
+    children: [
+      {
+        path: '',
+        loadComponent: () => import('./features/public/public.component').then(m => m.PublicComponent)
+      },
+      {
+        path: 'secure',
+        loadComponent: () => import('./features/secure/secure.component').then(m => m.SecureComponent),
+        canActivate: [authGuard]
+      },
+      {
+        path: 'currency-converter',
+        loadComponent: () => import('./features/currency/currency.component').then(m => m.CurrencyComponent),
+        canActivate: [authGuard]
+      }
+    ]
+  },
+  {
+    path: 'login',
+    loadComponent: () => import('./features/login/login.component').then(m => m.LoginComponent)
+  },
+  {
+    path: 'auth/callback',
+    loadComponent: () => import('./features/auth-callback/auth-callback.component').then(m => m.AuthCallbackComponent)
+  },
   { path: '**', redirectTo: '' }
 ];

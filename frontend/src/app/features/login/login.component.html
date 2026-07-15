@@ -11,9 +11,9 @@
 
     <!-- Centered Card Container -->
     <div class="auth-card-wrapper">
-      <div class="premium-auth-card">
-        <!-- Top Section -->
-        <div class="card-top">
+      <app-card>
+        <!-- Top Section (Custom Placement in Card Header) -->
+        <div card-header class="card-top">
           <div class="lock-icon-container">
             <svg lucideIcon="lock" class="lock-icon"></svg>
           </div>
@@ -23,77 +23,47 @@
 
         <!-- Error Banner inside card -->
         @if (errorMessage) {
-          <div class="premium-error-banner" role="alert">
-            <div class="error-banner-content">
-              <svg lucideIcon="alert-circle" class="error-banner-icon"></svg>
-              <div class="error-banner-text">
-                <span class="error-banner-title">Authentication Failed</span>
-                <p class="error-banner-desc">{{ errorMessage }}</p>
-              </div>
-            </div>
-            <button type="button" class="error-banner-close" (click)="errorMessage = null" aria-label="Dismiss error">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
+          <app-alert variant="error" title="Authentication Failed" [dismissible]="true" (onClose)="errorMessage = null">
+            {{ errorMessage }}
+          </app-alert>
         }
 
         <!-- Reactive Form -->
         <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="premium-form">
+          
           <!-- Username Input Wrapper -->
-          <div class="input-group" [class.is-invalid]="isFieldInvalid('username')">
-            <label for="username" class="input-label">Username</label>
-            <div class="input-field-container">
-              <span class="input-icon-wrapper">
-                <svg lucideIcon="user" class="field-icon"></svg>
-              </span>
-              <input
-                id="username"
-                type="text"
-                formControlName="username"
-                placeholder="e.g. admin"
-                class="premium-input"
-                aria-describedby="username-error"
-                [attr.aria-invalid]="isFieldInvalid('username')"
-              />
-            </div>
-            @if (isFieldInvalid('username')) {
-              <span id="username-error" class="field-error-message" role="alert">
-                {{ loginForm.get('username')?.errors?.['required'] ? 'Username is required.' : (loginForm.get('username')?.errors?.['minlength'] ? 'Username must be at least 3 characters.' : '') }}
-              </span>
-            }
-          </div>
+          <app-form-field
+            label="Username"
+            forId="username"
+            [invalid]="isFieldInvalid('username')"
+            [error]="loginForm.get('username')?.errors?.['required'] ? 'Username is required.' : (loginForm.get('username')?.errors?.['minlength'] ? 'Username must be at least 3 characters.' : null)"
+          >
+            <app-input
+              id="username"
+              type="text"
+              formControlName="username"
+              placeholder="e.g. admin"
+              icon="user"
+              [invalid]="isFieldInvalid('username')"
+            ></app-input>
+          </app-form-field>
 
           <!-- Password Input Wrapper -->
-          <div class="input-group" [class.is-invalid]="isFieldInvalid('password')">
-            <label for="password" class="input-label">Password</label>
-            <div class="input-field-container">
-              <span class="input-icon-wrapper">
-                <svg lucideIcon="lock" class="field-icon"></svg>
-              </span>
-              <input
-                id="password"
-                [type]="showPassword ? 'text' : 'password'"
-                formControlName="password"
-                placeholder="••••••••"
-                class="premium-input"
-                aria-describedby="password-error"
-                [attr.aria-invalid]="isFieldInvalid('password')"
-              />
-              <button
-                type="button"
-                class="password-toggle-btn"
-                (click)="togglePasswordVisibility()"
-                [attr.aria-label]="showPassword ? 'Hide password' : 'Show password'"
-              >
-                <svg [lucideIcon]="showPassword ? 'eye-off' : 'eye'" class="toggle-icon"></svg>
-              </button>
-            </div>
-            @if (isFieldInvalid('password')) {
-              <span id="password-error" class="field-error-message" role="alert">
-                {{ loginForm.get('password')?.errors?.['required'] ? 'Password is required.' : (loginForm.get('password')?.errors?.['minlength'] ? 'Password must be at least 6 characters.' : '') }}
-              </span>
-            }
-          </div>
+          <app-form-field
+            label="Password"
+            forId="password"
+            [invalid]="isFieldInvalid('password')"
+            [error]="loginForm.get('password')?.errors?.['required'] ? 'Password is required.' : (loginForm.get('password')?.errors?.['minlength'] ? 'Password must be at least 6 characters.' : null)"
+          >
+            <app-input
+              id="password"
+              type="password"
+              formControlName="password"
+              placeholder="••••••••"
+              icon="lock"
+              [invalid]="isFieldInvalid('password')"
+            ></app-input>
+          </app-form-field>
 
           <!-- Remember Me / Forgot Password links -->
           <div class="form-options">
@@ -106,26 +76,20 @@
           </div>
 
           <!-- Submit Button -->
-          <button
+          <app-button
             type="submit"
             [disabled]="isLoading"
-            class="premium-submit-btn"
-            [class.is-loading]="isLoading"
+            [loading]="isLoading"
+            [fullWidth]="true"
+            class="mt-3"
           >
-            @if (isLoading) {
-              <!-- Standard Spinner -->
-              <svg class="btn-spinner" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3" class="opacity-25"/>
-                <path d="M4 12a8 8 0 0 1 8-8V0C5.373 0 0 5.373 0 12h4z" fill="currentColor" class="opacity-75"/>
-              </svg>
-            }
             <span class="submit-btn-text">
               {{ isLoading ? 'Signing In...' : 'Sign In' }}
             </span>
             @if (!isLoading) {
-              <svg lucideIcon="arrow-right" class="btn-arrow-icon"></svg>
+              <svg lucideIcon="arrow-right" class="btn-arrow-icon" style="width: 16px; height: 16px; margin-left: 8px;"></svg>
             }
-          </button>
+          </app-button>
 
           <!-- OR Divider -->
           <div class="credentials-divider">
@@ -135,14 +99,15 @@
           </div>
 
           <!-- Google Authentication Button -->
-          <button
+          <app-button
             type="button"
-            class="google-signin-btn"
+            variant="secondary"
+            [fullWidth]="true"
             (click)="loginWithGoogle()"
           >
-            <img src="/google-icon.svg" class="google-icon" alt="Google Icon" />
+            <img src="/google-icon.svg" class="google-icon" alt="Google Icon" style="width: 18px; height: 18px; margin-right: 8px;" />
             <span class="google-btn-text">Continue with Google</span>
-          </button>
+          </app-button>
         </form>
 
         <!-- Divider & Demo Credentials -->
@@ -154,7 +119,7 @@
 
         <div class="demo-credentials-card">
           <div class="demo-card-header">
-            <span class="demo-badge">Demo Account</span>
+            <app-badge variant="primary">Demo Account</app-badge>
           </div>
           <div class="demo-card-body">
             <div class="demo-credential-row">
@@ -167,7 +132,7 @@
             </div>
           </div>
         </div>
-      </div>
+      </app-card>
     </div>
 
     <!-- Footer centered under the card/view -->

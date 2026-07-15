@@ -3,6 +3,8 @@ import { isPlatformBrowser } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
 import { SpinnerComponent } from '../../shared/components/spinner/spinner.component';
+import { DestroyRef } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-auth-callback',
@@ -59,30 +61,33 @@ export class AuthCallbackComponent implements OnInit {
   private readonly router = inject(Router);
   private readonly authService = inject(AuthService);
   private readonly platformId = inject(PLATFORM_ID);
-
+  private readonly destroyRef = inject(DestroyRef);
+ 
   ngOnInit(): void {
     if (!isPlatformBrowser(this.platformId)) {
       return;
     }
-
+ 
     const token = this.route.snapshot.queryParamMap.get('token');
-
+ 
     if (!token) {
       this.router.navigate(['/login']);
       return;
     }
-
-    this.authService.handleCallback(token).subscribe({
-      next: (response) => {
-        if (response.success) {
-          this.router.navigate(['/secure']);
-        } else {
+ 
+    this.authService.handleCallback(token)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (response) => {
+          if (response.success) {
+            this.router.navigate(['/secure']);
+          } else {
+            this.router.navigate(['/login']);
+          }
+        },
+        error: () => {
           this.router.navigate(['/login']);
         }
-      },
-      error: () => {
-        this.router.navigate(['/login']);
-      }
-    });
+      });
   }
 }

@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { isPlatformBrowser } from '@angular/common';
 import { Observable, tap } from 'rxjs';
 import { ApiResponse, LoginResponse, User } from '../models/user.model';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +15,7 @@ export class AuthService {
   private readonly platformId = inject(PLATFORM_ID);
   
   private readonly isBrowser = isPlatformBrowser(this.platformId);
-  private readonly apiUrl = 'https://localhost:7118/api/auth';
+  private readonly apiUrl = `${environment.apiUrl}/auth`;
 
   private readonly currentUserSignal = signal<User | null>(null);
   
@@ -92,7 +93,16 @@ export class AuthService {
    * Fetches the current logged in user details from the backend claims.
    */
   getMe(): Observable<ApiResponse<User>> {
-    return this.http.get<ApiResponse<User>>(`${this.apiUrl}/me`);
+    return this.http.get<ApiResponse<User>>(`${this.apiUrl}/me`).pipe(
+      tap((res) => {
+        if (res.success && res.data) {
+          this.currentUserSignal.set(res.data);
+          if (this.isBrowser) {
+            localStorage.setItem('user', JSON.stringify(res.data));
+          }
+        }
+      })
+    );
   }
 
   /**

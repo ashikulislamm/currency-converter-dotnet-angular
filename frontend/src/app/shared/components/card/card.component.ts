@@ -1,4 +1,4 @@
-import { Component, input } from '@angular/core';
+import { Component, input, ElementRef, inject, signal, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -8,7 +8,7 @@ import { CommonModule } from '@angular/common';
   template: `
     <div class="card" [ngClass]="[elevationClass(), bordered() ? 'card-bordered' : '']">
       <!-- Card Header -->
-      @if (title() || subtitle() || hasHeaderSlot) {
+      @if (title() || subtitle() || hasHeaderSlot()) {
         <div class="card-header">
           <div>
             @if (title()) {
@@ -28,7 +28,7 @@ import { CommonModule } from '@angular/common';
       </div>
 
       <!-- Card Footer -->
-      @if (hasFooterSlot) {
+      @if (hasFooterSlot()) {
         <div class="card-footer">
           <ng-content select="[card-footer]"></ng-content>
         </div>
@@ -97,20 +97,24 @@ import { CommonModule } from '@angular/common';
     }
   `]
 })
-export class CardComponent {
+export class CardComponent implements AfterViewInit {
   readonly title = input<string | null>(null);
   readonly subtitle = input<string | null>(null);
   readonly bordered = input<boolean>(true);
   readonly elevation = input<'none' | 'sm' | 'md'>('sm');
 
-  // Simple checks if headers or footers exist
-  protected get hasHeaderSlot(): boolean {
-    return false; // Angualr checks can be handled via template or contentchild if needed, but select matches automatically
-  }
+  private readonly el = inject(ElementRef);
+  protected readonly hasHeaderSlot = signal<boolean>(false);
+  protected readonly hasFooterSlot = signal<boolean>(false);
 
-  // To be safe we let ng-content select them
-  protected get hasFooterSlot(): boolean {
-    return true; // We show footer container only when requested
+  ngAfterViewInit(): void {
+    // Check if header slot contains projected elements
+    const headerEl = this.el.nativeElement.querySelector('[card-header]');
+    this.hasHeaderSlot.set(!!headerEl);
+
+    // Check if footer slot contains projected elements
+    const footerEl = this.el.nativeElement.querySelector('[card-footer]');
+    this.hasFooterSlot.set(!!footerEl);
   }
 
   protected elevationClass(): string {

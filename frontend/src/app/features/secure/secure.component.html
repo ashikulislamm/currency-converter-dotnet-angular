@@ -1,165 +1,149 @@
-<div class="secure-wrapper">
-  <!-- Sticky Navigation Header -->
-  <app-navbar></app-navbar>
+<!-- Main Grid Content -->
+<main class="secure-main">
+  
+  <!-- Welcome section -->
+  <div class="secure-header-section">
+    <span class="tagline">Secured Area</span>
+    <h1 class="title">
+      Welcome back, <span class="accent">{{ authService.currentUser()?.displayName || 'User' }}</span>
+    </h1>
+    <p class="description">You are securely connected using a JSON Web Token (JWT) issued by the backend API.</p>
+  </div>
 
-  <!-- Main Grid Content -->
-  <main class="secure-main">
+  <!-- Main Grid -->
+  <div class="dashboard-grid">
     
-    <!-- Welcome section -->
-    <div class="secure-header-section">
-      <span class="tagline">Secured Area</span>
-      <h1 class="title">
-        Welcome back, <span class="accent">{{ userProfile()?.displayName || 'User' }}</span>
-      </h1>
-      <p class="description">You are securely connected using a JSON Web Token (JWT) issued by the backend API.</p>
-    </div>
+    <!-- User Profile Card -->
+    <app-card title="Profile Metadata">
+      <!-- Display role badge in header via attribute placement -->
+      <div card-header>
+        <app-badge variant="primary">{{ authService.currentUser()?.role || 'Guest' }}</app-badge>
+      </div>
 
-    <!-- Main Grid -->
-    <div class="dashboard-grid">
-      
-      <!-- User Profile Card -->
-      <app-card title="Profile Metadata">
-        <!-- Display role badge in header via attribute placement -->
-        <div card-header>
-          <app-badge variant="primary">{{ userProfile()?.role || 'Guest' }}</app-badge>
+      <!-- Loading state (Manual Refreshing) -->
+      @if (isRefreshing()) {
+        <div class="syncing-claims-spinner">
+          <app-spinner size="md"></app-spinner>
+          <span>Syncing backend claims...</span>
+        </div>
+      }
+
+      <!-- Profile details -->
+      @if (!isRefreshing() && authService.currentUser()) {
+        <div class="profile-details-list">
+          <!-- Profile Picture (Google Only) -->
+          @if (authService.currentUser()?.profilePicture) {
+            <div class="profile-pic-container">
+              <img [src]="authService.currentUser()?.profilePicture" [alt]="(authService.currentUser()?.displayName || 'User') + ' Profile Picture'" class="profile-pic-img" />
+            </div>
+          }
+
+          <div class="profile-detail-item">
+            <span class="detail-label">Display Name</span>
+            <span class="detail-value">{{ authService.currentUser()?.displayName }}</span>
+          </div>
+
+          @if (authService.currentUser()?.email) {
+            <div class="profile-detail-item">
+              <span class="detail-label">Email</span>
+              <span class="detail-value">{{ authService.currentUser()?.email }}</span>
+            </div>
+          }
+
+          @if (authService.currentUser()?.provider !== 'Google') {
+            <div class="profile-detail-item">
+              <span class="detail-label">Username</span>
+              <span class="detail-value">{{ authService.currentUser()?.username }}</span>
+            </div>
+          }
+          
+          <div class="profile-detail-item">
+            <span class="detail-label">System Role</span>
+            <span class="detail-value">{{ authService.currentUser()?.role }}</span>
+          </div>
+
+          <div class="profile-detail-item">
+            <span class="detail-label">Authentication Provider</span>
+            <span class="detail-value">{{ authService.currentUser()?.provider || 'Local' }}</span>
+          </div>
+
+          <!-- Custom status badge showing how user authenticated -->
+          <div class="profile-auth-method-row">
+            <span class="auth-method-title">Authentication Method</span>
+            <div class="auth-method-value">
+              <span class="status-indicator-dot"></span>
+              <span>{{ authService.currentUser()?.loginMethod || 'Local Credentials' }}</span>
+            </div>
+          </div>
+        </div>
+      }
+
+      <!-- Error state -->
+      @if (!isRefreshing() && errorLoading()) {
+        <div class="mt-3">
+          <app-alert variant="error" title="Backend Sync Failed">
+            {{ errorLoading() }}
+          </app-alert>
+          <app-button 
+            variant="secondary" 
+            [fullWidth]="true" 
+            (click)="refreshProfile()"
+            class="mt-2"
+          >
+            Retry Claims Sync
+          </app-button>
+        </div>
+      }
+
+      <div card-footer class="profile-meta-note">
+        The profiles metadata shown above was extracted directly from active JWT Bearer claims validation.
+      </div>
+    </app-card>
+
+    <!-- Main Secured Application Area -->
+    <div class="module-content-wrapper">
+      <app-card title="Currency Converter Services" subtitle="Protected workspace calculation module.">
+        <div class="stats-grid">
+          <div class="profile-detail-item">
+            <div class="stat-card-inner">
+              <span class="stat-title">Authentication Method</span>
+              <span class="stat-value">
+                <svg lucideIcon="lock" style="color: var(--color-primary);"></svg>
+                <span>JWT Bearer</span>
+              </span>
+              <p class="stat-desc">Authorized requests use HTTP headers.</p>
+            </div>
+          </div>
+
+          <div class="profile-detail-item">
+            <div class="stat-card-inner">
+              <span class="stat-title">Access Level</span>
+              <span class="stat-value">
+                <svg lucideIcon="user" style="color: var(--color-info);"></svg>
+                <span>{{ authService.currentUser()?.role || 'User' }} Policies</span>
+              </span>
+              <p class="stat-desc">Claims validated at the gateway.</p>
+            </div>
+          </div>
         </div>
 
-        <!-- Loading state -->
-        @if (isLoadingProfile()) {
-          <div style="padding: 40px 0; display: flex; flex-direction: column; align-items: center; gap: 12px;">
-            <app-spinner size="md"></app-spinner>
-            <span class="text-small">Syncing backend claims...</span>
+        <!-- Interactive Module Banner -->
+        <div class="action-banner">
+          <div class="banner-content">
+            <h3 class="banner-title">Rates Conversion Tool</h3>
+            <p class="banner-desc">
+              Access live market calculation tools to compute exchange calculations. All currency requests are validated in real time.
+            </p>
           </div>
-        }
-
-        <!-- Profile details -->
-        @if (!isLoadingProfile() && userProfile()) {
-          <div class="profile-details-list">
-            <!-- Profile Picture (Google Only) -->
-            @if (userProfile()?.profilePicture) {
-              <div class="profile-pic-container" style="display: flex; justify-content: center; margin-bottom: 20px;">
-                <img [src]="userProfile()?.profilePicture" alt="Profile Picture" style="width: 80px; height: 80px; border-radius: 50%; border: 3px solid var(--color-primary, #2563EB); box-shadow: 0 4px 10px rgba(0,0,0,0.1);" />
-              </div>
-            }
-
-            <div class="profile-detail-item">
-              <span class="detail-label">Display Name</span>
-              <span class="detail-value">{{ userProfile()?.displayName }}</span>
-            </div>
-
-            @if (userProfile()?.email) {
-              <div class="profile-detail-item">
-                <span class="detail-label">Email</span>
-                <span class="detail-value">{{ userProfile()?.email }}</span>
-              </div>
-            }
-
-            @if (userProfile()?.provider !== 'Google') {
-              <div class="profile-detail-item">
-                <span class="detail-label">Username</span>
-                <span class="detail-value">{{ userProfile()?.username }}</span>
-              </div>
-            }
-            
-            <div class="profile-detail-item">
-              <span class="detail-label">System Role</span>
-              <span class="detail-value">{{ userProfile()?.role }}</span>
-            </div>
-
-            <div class="profile-detail-item">
-              <span class="detail-label">Authentication Provider</span>
-              <span class="detail-value">{{ userProfile()?.provider || 'Local' }}</span>
-            </div>
-
-            <!-- Custom status badge showing how user authenticated -->
-            <div class="profile-auth-method-row" style="margin-top: 20px; padding-top: 16px; border-top: 1px solid #E2E8F0; display: flex; flex-direction: column; gap: 8px; text-align: left;">
-              <span style="font-size: 11px; text-transform: uppercase; font-weight: 700; color: #64748B; letter-spacing: 0.05em;">Authentication Method</span>
-              <div style="display: flex; align-items: center; gap: 8px; font-weight: 600; font-size: 14px; color: #0F172A;">
-                <span style="display: inline-block; width: 10px; height: 10px; background-color: #22C55E; border-radius: 50%; box-shadow: 0 0 8px #22C55E;"></span>
-                <span>{{ userProfile()?.loginMethod || 'Local Credentials' }}</span>
-              </div>
-            </div>
-          </div>
-        }
-
-        <!-- Error state -->
-        @if (!isLoadingProfile() && errorLoading()) {
-          <div style="margin-top: 16px;">
-            <app-alert variant="error" title="Backend Sync Failed">
-              {{ errorLoading() }}
-            </app-alert>
-            <app-button 
-              variant="secondary" 
-              [fullWidth]="true" 
-              (click)="loadUserProfile()"
-              style="margin-top: 8px;"
-            >
-              Retry Claims Sync
+          <div class="banner-actions">
+            <app-button variant="primary" routerLink="/currency-converter">
+              <span>Launch Converter</span>
+              <svg lucideIcon="arrow-right" style="width: 16px; height: 16px;"></svg>
             </app-button>
           </div>
-        }
-
-        <div card-footer class="profile-meta-note">
-          The profiles metadata shown above was extracted directly from active JWT Bearer claims validation.
         </div>
       </app-card>
-
-      <!-- Main Secured Application Area -->
-      <div class="module-content-wrapper">
-        <app-card title="Currency Converter Services" subtitle="Protected workspace calculation module.">
-          <div class="stats-grid">
-            <div class="profile-detail-item">
-              <div class="stat-card-inner">
-                <span class="stat-title">Authentication Method</span>
-                <span class="stat-value">
-                  <svg lucideIcon="lock" style="color: var(--color-primary);"></svg>
-                  <span>JWT Bearer</span>
-                </span>
-                <p class="stat-desc">Authorized requests use HTTP headers.</p>
-              </div>
-            </div>
-
-            <div class="profile-detail-item">
-              <div class="stat-card-inner">
-                <span class="stat-title">Access Level</span>
-                <span class="stat-value">
-                  <svg lucideIcon="user" style="color: var(--color-info);"></svg>
-                  <span>{{ userProfile()?.role || 'User' }} Policies</span>
-                </span>
-                <p class="stat-desc">Claims validated at the gateway.</p>
-              </div>
-            </div>
-          </div>
-
-          <!-- Interactive Module Banner -->
-          <div class="action-banner" style="margin-top: 24px;">
-            <div class="banner-content">
-              <h3 class="banner-title">Rates Conversion Tool</h3>
-              <p class="banner-desc">
-                Access live market calculation tools to compute exchange calculations. All currency requests are validated in real time.
-              </p>
-            </div>
-            <div class="banner-actions">
-              <app-button variant="primary" routerLink="/currency-converter">
-                <span>Launch Converter</span>
-                <svg lucideIcon="arrow-right" style="width: 16px; height: 16px;"></svg>
-              </app-button>
-            </div>
-          </div>
-        </app-card>
-      </div>
-
     </div>
-  </main>
 
-  <!-- Footer -->
-  <footer class="secure-footer">
-    <div class="footer-container">
-      <p>&copy; 2026 Antigravity FX. All rights reserved.</p>
-      <div class="footer-links">
-        <a href="javascript:void(0)">Security Policy</a>
-        <a href="javascript:void(0)">Developer APIs</a>
-      </div>
-    </div>
-  </footer>
-</div>
+  </div>
+</main>

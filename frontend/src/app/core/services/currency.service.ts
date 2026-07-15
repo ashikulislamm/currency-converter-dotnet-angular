@@ -3,13 +3,14 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { ApiResponse } from '../models/user.model';
 import { Currency, ConvertRequest, ConvertResponse } from '../models/currency.model';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CurrencyService {
   private readonly http = inject(HttpClient);
-  private readonly apiUrl = 'https://localhost:7118/api/currency';
+  private readonly apiUrl = `${environment.apiUrl}/currency`;
 
   /**
    * Fetches all supported currencies from the backend API.

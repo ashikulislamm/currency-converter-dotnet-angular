@@ -1,9 +1,17 @@
-import { Component, inject } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Component, inject, signal, DestroyRef } from '@angular/core';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { LucideDynamicIcon } from '@lucide/angular';
+import { CardComponent } from '../../shared/components/card/card.component';
+import { FormFieldComponent } from '../../shared/components/form-field/form-field.component';
+import { InputComponent } from '../../shared/components/input/input.component';
+import { ButtonComponent } from '../../shared/components/button/button.component';
+import { AlertComponent } from '../../shared/components/alert/alert.component';
+import { BadgeComponent } from '../../shared/components/badge/badge.component';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-login',
@@ -11,17 +19,24 @@ import { LucideDynamicIcon } from '@lucide/angular';
   imports: [
     ReactiveFormsModule, 
     RouterLink, 
-    LucideDynamicIcon
+    LucideDynamicIcon,
+    CardComponent,
+    FormFieldComponent,
+    InputComponent,
+    ButtonComponent,
+    AlertComponent,
+    BadgeComponent
   ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss'
 })
 export class LoginComponent {
-  private readonly fb = inject(FormBuilder);
+  private readonly fb = inject(FormBuilder).nonNullable;
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
+  private readonly destroyRef = inject(DestroyRef);
 
-  readonly loginForm: FormGroup = this.fb.group({
+  readonly loginForm = this.fb.group({
     username: ['', [Validators.required, Validators.minLength(3)]],
     password: ['', [Validators.required, Validators.minLength(6)]]
   });
@@ -43,34 +58,35 @@ export class LoginComponent {
     this.isLoading = true;
     this.errorMessage = null;
 
-    const credentials = this.loginForm.value;
+    const credentials = this.loginForm.getRawValue();
 
-    this.authService.login(credentials).subscribe({
-      next: (response) => {
-        this.isLoading = false;
-        if (response.success) {
-          this.router.navigate(['/secure']);
-        } else {
-          this.errorMessage = response.message || 'Login failed.';
+    this.authService.login(credentials)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (response) => {
+          this.isLoading = false;
+          if (response.success) {
+            this.router.navigate(['/secure']);
+          } else {
+            this.errorMessage = response.message || 'Login failed.';
+          }
+        },
+        error: (error: HttpErrorResponse) => {
+          this.isLoading = false;
+          if (error.error && error.error.success === false) {
+            this.errorMessage = error.error.message;
+          } else {
+            this.errorMessage = 'Invalid username or password.';
+          }
         }
-      },
-      error: (error: HttpErrorResponse) => {
-        this.isLoading = false;
-        // Parse error response wrapper from our global exception handler
-        if (error.error && error.error.success === false) {
-          this.errorMessage = error.error.message;
-        } else {
-          this.errorMessage = 'Invalid username or password.';
-        }
-      }
-    });
+      });
   }
 
   loginWithGoogle(): void {
-    window.location.href = 'https://localhost:7118/api/auth/google-login';
+    window.location.href = environment.googleLoginUrl;
   }
 
-  isFieldInvalid(field: string): boolean {
+  isFieldInvalid(field: 'username' | 'password'): boolean {
     const control = this.loginForm.get(field);
     return !!(control && control.invalid && (control.dirty || control.touched));
   }

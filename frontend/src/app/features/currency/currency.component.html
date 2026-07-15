@@ -1,170 +1,155 @@
-<div class="currency-wrapper">
-  <!-- Sticky Navbar Header -->
-  <app-navbar></app-navbar>
+<!-- Main Body -->
+<main class="currency-main">
+  <!-- Breadcrumb -->
+  <nav class="breadcrumb">
+    <a routerLink="/secure">Dashboard</a>
+    <span class="divider">/</span>
+    <span class="active">Currency Converter</span>
+  </nav>
 
-  <!-- Main Body -->
-  <main class="currency-main">
-    <!-- Breadcrumb -->
-    <nav class="breadcrumb">
-      <a routerLink="/secure">Dashboard</a>
-      <span class="divider">/</span>
-      <span class="active">Currency Converter</span>
-    </nav>
+  <!-- Page Header -->
+  <div class="page-header-section">
+    <h1 class="title">Currency Converter</h1>
+    <p class="description">Convert currencies and review foreign exchange rates powered by live API updates.</p>
+  </div>
 
-    <!-- Page Header -->
-    <div class="page-header-section">
-      <h1 class="title">Currency Converter</h1>
-      <p class="description">Convert currencies and review foreign exchange rates powered by live API updates.</p>
-    </div>
-
-    <!-- Main Card -->
-    <app-card>
-      <!-- Loading Supported Currencies State -->
-      @if (isLoadingCurrencies()) {
-        <div class="loading-center">
-          <app-spinner size="lg"></app-spinner>
-          <span>Loading supported currencies from API...</span>
-        </div>
-      } @else {
-        
-        <!-- Error Alert Message -->
-        @if (errorMessage()) {
-          <app-alert variant="error" title="System Error">
-            {{ errorMessage() }}
-            <div style="margin-top: var(--space-2)">
-              <app-button variant="secondary" (click)="loadCurrencies()">Retry Loading</app-button>
-            </div>
-          </app-alert>
-        }
-
-        <!-- Conversion Form -->
-        <form [formGroup]="convertForm" (ngSubmit)="onSubmit()" class="converter-form-layout">
-          <div class="inputs-row">
-            
-            <!-- Amount Input -->
-            <app-form-field 
-              label="Amount to Convert" 
-              forId="amount"
-              [invalid]="isFieldInvalid('amount')"
-              [error]="convertForm.get('amount')?.errors?.['required'] ? 'Amount is required.' : (convertForm.get('amount')?.errors?.['min'] ? 'Amount must be greater than zero.' : null)"
-            >
-              <app-input
-                id="amount"
-                type="number"
-                step="0.01"
-                [min]="0.01"
-                formControlName="amount"
-                placeholder="100.00"
-                icon="dollar-sign"
-                [invalid]="isFieldInvalid('amount')"
-              ></app-input>
-            </app-form-field>
-
-            <!-- Source Dropdown -->
-            <app-form-field 
-              label="From Currency" 
-              forId="from"
-              [invalid]="isFieldInvalid('from')"
-              [error]="convertForm.get('from')?.errors?.['required'] ? 'Source currency is required.' : null"
-            >
-              <select 
-                id="from" 
-                formControlName="from"
-                class="form-select"
-                [class.is-invalid]="isFieldInvalid('from')"
-              >
-                @for (curr of currencies(); track curr.code) {
-                  <option [value]="curr.code">{{ curr.code }} - {{ curr.name }}</option>
-                }
-              </select>
-            </app-form-field>
-
-            <!-- Swap Button -->
-            <div class="swap-button-col">
-              <button 
-                type="button" 
-                class="swap-btn" 
-                (click)="swapCurrencies()"
-                title="Swap Currencies"
-              >
-                <svg lucideIcon="arrow-left-right" class="swap-icon"></svg>
-              </button>
-            </div>
-
-            <!-- Destination Dropdown -->
-            <app-form-field 
-              label="To Currency" 
-              forId="to"
-              [invalid]="isFieldInvalid('to')"
-              [error]="convertForm.get('to')?.errors?.['required'] ? 'Destination currency is required.' : null"
-            >
-              <select 
-                id="to" 
-                formControlName="to"
-                class="form-select"
-                [class.is-invalid]="isFieldInvalid('to')"
-              >
-                @for (curr of currencies(); track curr.code) {
-                  <option [value]="curr.code">{{ curr.code }} - {{ curr.name }}</option>
-                }
-              </select>
-            </app-form-field>
-
-          </div>
-
-          <!-- Submit Button -->
-          <app-button 
-            type="submit" 
-            [loading]="isConverting()" 
-            [disabled]="isLoadingCurrencies()"
-            [fullWidth]="true"
-            style="margin-top: var(--space-2);"
-          >
-            <span>Convert Currencies</span>
-          </app-button>
-        </form>
-      }
-
-      <!-- Result Card -->
-      @if (successResult()) {
-        <div class="result-card">
-          <div class="result-calculation">
-            <span class="calculation-original">
-              {{ successResult()?.originalAmount | number:'1.2-2' }} {{ successResult()?.from }} =
-            </span>
-            <h2 class="calculation-result">
-              <span>{{ successResult()?.convertedAmount | number:'1.2-4' }}</span>
-              <span class="currency-code">{{ successResult()?.to }}</span>
-            </h2>
-          </div>
-
-          <div class="result-meta-grid">
-            <div class="rate-details">
-              <div>
-                Exchange Rate: <span class="rate-span">1 {{ successResult()?.from }} = {{ successResult()?.exchangeRate | number:'1.2-6' }} {{ successResult()?.to }}</span>
-              </div>
-              <div>
-                Inverse Rate: <span class="rate-span">1 {{ successResult()?.to }} = {{ (1 / (successResult()?.exchangeRate || 1)) | number:'1.2-6' }} {{ successResult()?.from }}</span>
-              </div>
-            </div>
-            <div class="timestamp-details">
-              <span>Exchange rate updated:</span><br />
-              <strong style="color: var(--color-text-primary)">{{ successResult()?.timestamp | date:'medium' }}</strong>
-            </div>
-          </div>
-        </div>
-      }
-    </app-card>
-  </main>
-
-  <!-- Footer -->
-  <footer class="currency-footer">
-    <div class="footer-container">
-      <p>&copy; 2026 Antigravity FX. All rights reserved.</p>
-      <div class="footer-links">
-        <a href="javascript:void(0)">Data Policy</a>
-        <a href="javascript:void(0)">API terms</a>
+  <!-- Main Card -->
+  <app-card>
+    <!-- Loading Supported Currencies State -->
+    @if (isLoadingCurrencies()) {
+      <div class="loading-center">
+        <app-spinner size="lg"></app-spinner>
+        <span>Loading supported currencies from API...</span>
       </div>
-    </div>
-  </footer>
-</div>
+    } @else {
+      
+      <!-- Error Alert Message -->
+      @if (errorMessage()) {
+        <app-alert variant="error" title="System Error">
+          {{ errorMessage() }}
+          <div class="mt-2">
+            <app-button variant="secondary" (click)="loadCurrencies()">Retry Loading</app-button>
+          </div>
+        </app-alert>
+      }
+
+      <!-- Conversion Form -->
+      <form [formGroup]="convertForm" (ngSubmit)="onSubmit()" class="converter-form-layout">
+        <div class="inputs-row">
+          
+          <!-- Amount Input -->
+          <app-form-field 
+            label="Amount to Convert" 
+            forId="amount"
+            [invalid]="isFieldInvalid('amount')"
+            [error]="convertForm.get('amount')?.errors?.['required'] ? 'Amount is required.' : (convertForm.get('amount')?.errors?.['min'] ? 'Amount must be greater than zero.' : null)"
+          >
+            <app-input
+              id="amount"
+              type="number"
+              step="0.01"
+              [min]="0.01"
+              formControlName="amount"
+              placeholder="100.00"
+              icon="dollar-sign"
+              [invalid]="isFieldInvalid('amount')"
+            ></app-input>
+          </app-form-field>
+
+          <!-- Source Dropdown -->
+          <app-form-field 
+            label="From Currency" 
+            forId="from"
+            [invalid]="isFieldInvalid('from')"
+            [error]="convertForm.get('from')?.errors?.['required'] ? 'Source currency is required.' : null"
+          >
+            <select 
+              id="from" 
+              formControlName="from"
+              class="form-select"
+              [class.is-invalid]="isFieldInvalid('from')"
+            >
+              @for (curr of currencies(); track curr.code) {
+                <option [value]="curr.code">{{ curr.code }} - {{ curr.name }}</option>
+              }
+            </select>
+          </app-form-field>
+
+          <!-- Swap Button -->
+          <div class="swap-button-col">
+            <button 
+              type="button" 
+              class="swap-btn" 
+              (click)="swapCurrencies()"
+              aria-label="Swap Currencies"
+              title="Swap Currencies"
+            >
+              <svg lucideIcon="arrow-left-right" class="swap-icon"></svg>
+            </button>
+          </div>
+
+          <!-- Destination Dropdown -->
+          <app-form-field 
+            label="To Currency" 
+            forId="to"
+            [invalid]="isFieldInvalid('to')"
+            [error]="convertForm.get('to')?.errors?.['required'] ? 'Destination currency is required.' : null"
+          >
+            <select 
+              id="to" 
+              formControlName="to"
+              class="form-select"
+              [class.is-invalid]="isFieldInvalid('to')"
+            >
+              @for (curr of currencies(); track curr.code) {
+                <option [value]="curr.code">{{ curr.code }} - {{ curr.name }}</option>
+              }
+            </select>
+          </app-form-field>
+
+        </div>
+
+        <!-- Submit Button -->
+        <app-button 
+          type="submit" 
+          [loading]="isConverting()" 
+          [disabled]="isLoadingCurrencies()"
+          [fullWidth]="true"
+          class="mt-2 block-button"
+        >
+          <span>Convert Currencies</span>
+        </app-button>
+      </form>
+    }
+
+    <!-- Result Card -->
+    @if (successResult()) {
+      <div class="result-card">
+        <div class="result-calculation">
+          <span class="calculation-original">
+            {{ successResult()?.originalAmount | number:'1.2-2' }} {{ successResult()?.from }} =
+          </span>
+          <h2 class="calculation-result">
+            <span>{{ successResult()?.convertedAmount | number:'1.2-4' }}</span>
+            <span class="currency-code">{{ successResult()?.to }}</span>
+          </h2>
+        </div>
+
+        <div class="result-meta-grid">
+          <div class="rate-details">
+            <div>
+              Exchange Rate: <span class="rate-span">1 {{ successResult()?.from }} = {{ successResult()?.exchangeRate | number:'1.2-6' }} {{ successResult()?.to }}</span>
+            </div>
+            <div>
+              Inverse Rate: <span class="rate-span">1 {{ successResult()?.to }} = {{ (1 / (successResult()?.exchangeRate || 1)) | number:'1.2-6' }} {{ successResult()?.from }}</span>
+            </div>
+          </div>
+          <div class="timestamp-details">
+            <span>Exchange rate updated:</span><br />
+            <strong class="timestamp-value">{{ successResult()?.timestamp | date:'medium' }}</strong>
+          </div>
+        </div>
+      </div>
+    }
+  </app-card>
+</main>
