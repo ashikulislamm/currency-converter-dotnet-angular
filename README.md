@@ -15,13 +15,31 @@ The application integrates with the public Frankfurter API to fetch live currenc
 *   **API Documentation:** OpenAPI (Swagger UI via Swashbuckle)
 *   **External Integration:** Typed `HttpClient` connecting to the Frankfurter API
 *   **Configuration:** Strongly typed options mapped via the Options Pattern
+*   **Containerization:** Docker support targeting .NET 10 runtime
 
 ### Frontend
 *   **Framework:** `Angular 21` (incorporating Standalone Components, Client Hydration, and Server-Side Rendering)
+*   **Layout:** Shell layout with responsive navigation (`ShellComponent`)
 *   **State Management:** Reactive state handling leveraging Angular **Signals** (`signal`, `computed`, `asReadonly`)
 *   **Styling:** `Tailwind CSS v4` with modern custom glassmorphism and SCSS mixins
 *   **Icons:** Lucide Icons (`@lucide/angular`)
 *   **Testing:** `Vitest v4` (modern, ultra-fast test runner replacing Karma/Jasmine)
+
+---
+
+## Screenshots
+
+### 🖥️ Homepage / Landing Page
+![Homepage](screenshots/Homepage.png)
+
+### 🔐 Secure Login Page (Local Credentials & Google OAuth)
+![Login Page](screenshots/Loginpage.png)
+
+### 💱 Currency Converter Dashboard
+![Currency Page](screenshots/CurrencyPage.png)
+
+### 👤 User Profile (Secure Area)
+![Profile Page](screenshots/Profile.png)
 
 ---
 
@@ -37,9 +55,10 @@ The application integrates with the public Frankfurter API to fetch live currenc
 3.  **Typed HTTP Clients:** Consumes external services safely using configured, timeout-resilient HTTP clients registered in the Dependency Injection container.
 
 ### Frontend Design Patterns
-1.  **Signals State Management:** Manages active user profiles and conversion parameters reactively. Replaces heavy boilerplate architectures (like NgRx) with fine-grained reactivity.
-2.  **Functional Interceptors:** An HTTP interceptor automatically appends JWT Bearer tokens to outgoing headers and monitors `401 Unauthorized` responses to seamlessly clear expired sessions and redirect the client to safety.
-3.  **Declarative Route Guarding:** Secure routes are protected by a functional route guard (`authGuard`) that inspects authentication state signals in real-time.
+1.  **Shell Layout Shell Pattern:** Uses a central `ShellComponent` layout shell to encapsulate navigation headers, active user profile panels, and responsive footer components.
+2.  **Signals State Management:** Manages active user profiles and conversion parameters reactively. Replaces heavy boilerplate architectures (like NgRx) with fine-grained reactivity.
+3.  **Functional Interceptors:** An HTTP interceptor automatically appends JWT Bearer tokens to outgoing headers and monitors `401 Unauthorized` responses to seamlessly clear expired sessions and redirect the client to safety.
+4.  **Declarative Route Guarding:** Secure routes are protected by a functional route guard (`authGuard`) that inspects authentication state signals in real-time.
 
 ---
 
@@ -50,19 +69,20 @@ The application integrates with the public Frankfurter API to fetch live currenc
 │   ├── CurrencyConverter.Domain/         # Enterprise business rules (Models, Constants)
 │   ├── CurrencyConverter.Applicatio/     # Application logic & abstractions (Services, Interfaces, DTOs)
 │   ├── CurrencyConverter.Infrastructure/ # Database/external details (JWT, HttpClient, Options)
-│   ├── CurrencyConverter.Api/            # ASP.NET Core presentation layer (Controllers, Program.cs)
+│   ├── CurrencyConverter.Api/            # ASP.NET Core presentation layer (Controllers, Program.cs, dockerfile)
 │   └── CurrencyConverterAssessment.slnx  # Modern XML-based Visual Studio Solution definition
 ├── frontend/
 │   ├── src/
 │   │   ├── app/
 │   │   │   ├── core/                     # Singleton constructs (guards, interceptors, services, models)
-│   │   │   ├── features/                 # Main feature modules (login, currency converter views)
-│   │   │   └── shared/                   # Common reusable elements and layout controls
+│   │   │   ├── features/                 # Main feature modules (login, currency converter, auth-callback)
+│   │   │   └── shared/                   # Common reusable elements and layout controls (shell layout)
 │   │   ├── styles/                       # Global styles & layout mixins (Tailwind CSS + SCSS)
 │   │   ├── main.ts                       # Angular bootstrap endpoint
 │   │   └── server.ts                     # Express server setup for Angular SSR
 │   ├── package.json                      # NPM dependencies and development scripts (Vitest)
 │   └── angular.json                      # Angular CLI workspace config
+├── screenshots/                          # Application screenshots demonstrating the UI
 └── README.md                             # Global documentation (This file)
 ```
 
@@ -86,7 +106,7 @@ All API endpoints return JSON responses wrapped in a standard envelope:
 | `POST` | `/api/auth/login` | No | Authenticates a user and issues a JWT access token. |
 | `GET` | `/api/auth/google-login` | No | Initiates Google OAuth 2.0 authentication challenge. |
 | `GET` | `/api/auth/google-callback` | No | Receives Google's response, generates the application JWT, and redirects to Angular. |
-| `GET` | `/api/auth/me` | Yes (Bearer) | Decodes the JWT token and returns the current user profile (adapts based on auth provider). |
+| `GET` | `/api/auth/me` | Yes (Bearer) | Decodes the JWT token and returns the current user profile. |
 | `POST` | `/api/auth/logout` | Yes (Bearer) | Notifies the server of user sign-out (stateless). |
 | `GET` | `/api/currency/currencies` | Yes (Bearer) | Fetches the map of all supported currency codes. |
 | `POST` | `/api/currency/convert` | Yes (Bearer) | Converts an amount between source and target currencies. |
@@ -165,8 +185,9 @@ All API endpoints return JSON responses wrapped in a standard envelope:
 *   [Node.js (v18.x or newer)](https://nodejs.org)
 *   [Angular CLI](https://angular.dev/tools/cli) (installed globally via `npm install -g @angular/cli`)
 
-### Running the Backend Web API
-1. Navigate into the backend root directory:
+### Running the Backend Web API Locally
+
+1. Navigate into the backend directory:
    ```bash
    cd backend
    ```
@@ -174,15 +195,25 @@ All API endpoints return JSON responses wrapped in a standard envelope:
    ```bash
    dotnet restore
    ```
-3. Run the development server targeting the `CurrencyConverter.Api` project (using the `https` profile to support the Google OAuth callback):
-   ```bash
-   dotnet run --project CurrencyConverter.Api --launch-profile https
-   ```
-   *   The Web API server starts on `https://localhost:7118` (HTTPS) and `http://localhost:5285` (HTTP).
+3. Run the development server targeting the `CurrencyConverter.Api` project (using the `https` profile for secure Google OAuth callback functionality):
+   * **If running from the `backend` folder**:
+     ```bash
+     dotnet run --project CurrencyConverter.Api --launch-profile https
+     ```
+   * **If running from inside the `backend/CurrencyConverter.Api` folder**:
+     ```bash
+     dotnet run --launch-profile https
+     ```
+   * **If running from the workspace root**:
+     ```bash
+     dotnet run --project backend/CurrencyConverter.Api --launch-profile https
+     ```
+4. Verification:
+   *   The Web API server starts on **`https://localhost:7118`** (HTTPS).
    *   Access the live interactive Swagger API docs at `https://localhost:7118/swagger`.
 
 #### Mock Accounts (`appsettings.json`)
-The application is pre-configured with the following credentials stored securely inside settings:
+The application is pre-configured with the following local credentials:
 *   **Administrator Account:**
     *   *Username:* `admin`
     *   *Password:* `Password123`
@@ -202,7 +233,30 @@ Google OAuth credentials are managed securely using **ASP.NET Core User Secrets*
     - **Authorized Redirect URIs:** `https://localhost:7118/signin-google`
     - **Authorized JavaScript Origins:** `http://localhost:4200`
 
+---
+
+### Running the Backend Web API with Docker
+
+1. Navigate to the `backend` directory (which acts as the Docker build context to include core referenced projects):
+   ```bash
+   cd backend
+   ```
+2. Build the Docker image:
+   ```bash
+   docker build -t currency-converter-api -f CurrencyConverter.Api/dockerfile .
+   ```
+3. Run the Docker container:
+   ```bash
+   docker run -d -p 10000:10000 --name currency-api-container currency-converter-api
+   ```
+4. Verification:
+   * The API will listen on `http://localhost:10000`.
+   * *Note: Running Google OAuth in a containerized production setup will require an HTTPS reverse proxy (such as Nginx or Traefik) to manage SSL termination.*
+
+---
+
 ### Running the Angular UI
+
 1. Navigate into the frontend root directory:
    ```bash
    cd frontend
